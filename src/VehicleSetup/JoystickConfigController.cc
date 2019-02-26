@@ -99,6 +99,14 @@ const JoystickConfigController::stateMachineEntry* JoystickConfigController::_ge
     static const char* msgPitchDown =       "Move the Pitch stick all the way down and hold it there...";
     static const char* msgPitchUp =         "Move the Pitch stick all the way up and hold it there...";
     static const char* msgPitchCenter =     "Allow the Pitch stick to move back to center...";
+    static const char* msgChannel5Min =     "Move the channel 5 stick/pot/slider/switch to its minimum and hold it there...";
+    static const char* msgChannel5Max =     "Move the channel 5 stick/pot/slider/switch to its maximum and hold it there...";
+    static const char* msgChannel6Min =     "Move the channel 6 stick/pot/slider/switch to its minimum and hold it there...";
+    static const char* msgChannel6Max =     "Move the channel 6 stick/pot/slider/switch to its maximum and hold it there...";
+    // static const char* msgChannel7Min =     "Move the channel 7 stick/pot/slider/switch to its minimum and hold it there...";
+    // static const char* msgChannel7Max =     "Move the channel 7 stick/pot/slider/switch to its maximum and hold it there...";
+    // static const char* msgChannel8Min =     "Move the channel 8 stick/pot/slider/switch to its minimum and hold it there...";
+    // static const char* msgChannel8Max =     "Move the channel 8 stick/pot/slider/switch to its maximum and hold it there...";
     static const char* msgComplete =        "All settings have been captured. Click Next to enable the joystick.";
     
     static const stateMachineEntry rgStateMachine[] = {
@@ -113,6 +121,14 @@ const JoystickConfigController::stateMachineEntry* JoystickConfigController::_ge
         { Joystick::pitchFunction,     msgPitchUp,         _imagePitchUp,      &JoystickConfigController::_inputStickDetect,       NULL,                                           NULL },
         { Joystick::pitchFunction,     msgPitchDown,       _imagePitchDown,    &JoystickConfigController::_inputStickMin,          NULL,                                           NULL },
         { Joystick::pitchFunction,     msgPitchCenter,     _imageCenter,       &JoystickConfigController::_inputCenterWait,        NULL,                                           NULL },
+        { Joystick::channel5Function,  msgChannel5Min,     _imagePitchUp,      &JoystickConfigController::_inputStickDetect,       NULL,                                           NULL },
+        { Joystick::channel5Function,  msgChannel5Max,     _imagePitchDown,    &JoystickConfigController::_inputStickMin,          NULL,                                           NULL },
+        { Joystick::channel6Function,  msgChannel6Min,     _imagePitchUp,      &JoystickConfigController::_inputStickDetect,       NULL,                                           NULL },
+        { Joystick::channel6Function,  msgChannel6Max,     _imagePitchDown,    &JoystickConfigController::_inputStickMin,          NULL,                                           NULL },
+        // { Joystick::channel7Function,  msgChannel7Min,     _imagePitchUp,      &JoystickConfigController::_inputStickDetect,       NULL,                                           NULL },
+        // { Joystick::channel7Function,  msgChannel7Max,     _imagePitchDown,    &JoystickConfigController::_inputStickMin,          NULL,                                           NULL },
+        // { Joystick::channel8Function,  msgChannel8Min,     _imagePitchUp,      &JoystickConfigController::_inputStickDetect,       NULL,                                           NULL },
+        // { Joystick::channel8Function,  msgChannel8Max,     _imagePitchDown,    &JoystickConfigController::_inputStickMin,          NULL,                                           NULL },
         { Joystick::maxFunction,       msgComplete,        _imageCenter,       NULL,                                               &JoystickConfigController::_writeCalibration,   NULL },
     };
     
@@ -126,6 +142,18 @@ void JoystickConfigController::_advanceState(void)
     _currentStep++;
     _setupCurrentState();
 }
+
+// void JoystickConfigController::_advanceStates(void)
+// {
+//     _currentStep = _currentStep + 2;
+//     _setupCurrentState();
+// }
+
+// void JoystickConfigController::_advanceStates(int numSteps)
+// {
+//     _currentStep = _currentStep + numSteps;
+//     _setupCurrentState();
+// }
 
 
 /// @brief Sets up the state machine according to the current step from _currentStep.
