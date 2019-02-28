@@ -2728,7 +2728,7 @@ void Vehicle::virtualTabletJoystickValue(double roll, double pitch, double yaw, 
     // The following if statement prevents the virtualTabletJoystick from sending values if the standard joystick is enabled
     if ( !_joystickEnabled && !_highLatencyLink) {
         _uas->setExternalControlSetpoint((float)roll, (float)pitch, (float)yaw, (float)thrust,
-                                         0.0f, 0.0f, //0.0f, 0.0f, 
+                                         0.0f, 0.0f, 0.0f, 0.0f,
                                          0, 
                                          JoystickModeRC);
     }
