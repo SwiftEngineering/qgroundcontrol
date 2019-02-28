@@ -266,7 +266,7 @@ public slots:
 
     /** @brief Set the values for the manual control of the vehicle */
     void setExternalControlSetpoint(float roll, float pitch, float yaw, float thrust, 
-                                    float channel5, float channel6, //float channel7, float channel8,
+                                    float channel5, float channel6, float channel7, float channel8,
                                     quint16 buttons, int joystickMode);
 
     /** @brief Set the values for the 6dof manual control of the vehicle */

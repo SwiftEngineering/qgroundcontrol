@@ -299,6 +299,126 @@ SetupPage {
                             target: _activeJoystick
 
                             onManualControl: throttleLoader.item.axisValue = _activeJoystick.negativeThrust ? -throttle*32768.0 : (-2*throttle+1)*32768.0
+                            }
+                    }
+
+                    Item {
+                        width:  parent.width
+                        height: defaultTextHeight * 2
+
+                        QGCLabel {
+                            id:     channel5Label
+                            width:  defaultTextWidth * 10
+                            text:   qsTr("Channel 5")
+                        }
+
+                        Loader {
+                            id:                 channel5Loader
+                            anchors.left:       channel5Label.right
+                            anchors.right:      parent.right
+                            height:             ScreenTools.defaultFontPixelHeight
+                            width:              100
+                            sourceComponent:    axisMonitorDisplayComponent
+
+                            property real defaultTextWidth: ScreenTools.defaultFontPixelWidth
+                            property bool mapped:           controller.channel5AxisMapped
+                            property bool reversed:         controller.channel5AxisReversed
+                        }
+
+                        Connections {
+                            target: _activeJoystick
+
+                            onManualControl: channel5Loader.item.axisValue = channel5*32768.0
+                        }
+                    }
+
+                    Item {
+                        width:  parent.width
+                        height: defaultTextHeight * 2
+
+                        QGCLabel {
+                            id:     channel6Label
+                            width:  defaultTextWidth * 10
+                            text:   qsTr("Channel 6")
+                        }
+
+                        Loader {
+                            id:                 channel6Loader
+                            anchors.left:       channel6Label.right
+                            anchors.right:      parent.right
+                            height:             ScreenTools.defaultFontPixelHeight
+                            width:              100
+                            sourceComponent:    axisMonitorDisplayComponent
+
+                            property real defaultTextWidth: ScreenTools.defaultFontPixelWidth
+                            property bool mapped:           controller.channel6AxisMapped
+                            property bool reversed:         controller.channel6AxisReversed
+                        }
+
+                        Connections {
+                            target: _activeJoystick
+
+                            onManualControl: channel6Loader.item.axisValue = channel6*32768.0
+                        }
+                    }
+
+                    Item {
+                        width:  parent.width
+                        height: defaultTextHeight * 2
+
+                        QGCLabel {
+                            id:     channel7Label
+                            width:  defaultTextWidth * 10
+                            text:   qsTr("Channel 7")
+                        }
+
+                        Loader {
+                            id:                 channel7Loader
+                            anchors.left:       channel7Label.right
+                            anchors.right:      parent.right
+                            height:             ScreenTools.defaultFontPixelHeight
+                            width:              100
+                            sourceComponent:    axisMonitorDisplayComponent
+
+                            property real defaultTextWidth: ScreenTools.defaultFontPixelWidth
+                            property bool mapped:           controller.channel7AxisMapped
+                            property bool reversed:         controller.channel7AxisReversed
+                        }
+
+                        Connections {
+                            target: _activeJoystick
+
+                            onManualControl: channel7Loader.item.axisValue = channel7*32768.0
+                        }
+                    }
+
+                    Item {
+                        width:  parent.width
+                        height: defaultTextHeight * 2
+
+                        QGCLabel {
+                            id:     channel8Label
+                            width:  defaultTextWidth * 10
+                            text:   qsTr("Channel 8")
+                        }
+
+                        Loader {
+                            id:                 channel8Loader
+                            anchors.left:       channel8Label.right
+                            anchors.right:      parent.right
+                            height:             ScreenTools.defaultFontPixelHeight
+                            width:              100
+                            sourceComponent:    axisMonitorDisplayComponent
+
+                            property real defaultTextWidth: ScreenTools.defaultFontPixelWidth
+                            property bool mapped:           controller.channel8AxisMapped
+                            property bool reversed:         controller.channel8AxisReversed
+                        }
+
+                        Connections {
+                            target: _activeJoystick
+
+                            onManualControl: channel8Loader.item.axisValue = channel8*32768.0
                         }
                     }
                 } // Column - Attitude Control labels

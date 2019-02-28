@@ -52,10 +52,20 @@ public:
     Q_PROPERTY(bool yawAxisMapped       READ yawAxisMapped      NOTIFY yawAxisMappedChanged)
     Q_PROPERTY(bool throttleAxisMapped  READ throttleAxisMapped NOTIFY throttleAxisMappedChanged)
 
-    Q_PROPERTY(int rollAxisReversed     READ rollAxisReversed       NOTIFY rollAxisReversedChanged)
-    Q_PROPERTY(int pitchAxisReversed    READ pitchAxisReversed      NOTIFY pitchAxisReversedChanged)
-    Q_PROPERTY(int yawAxisReversed      READ yawAxisReversed        NOTIFY yawAxisReversedChanged)
-    Q_PROPERTY(int throttleAxisReversed READ throttleAxisReversed   NOTIFY throttleAxisReversedChanged)
+    Q_PROPERTY(bool rollAxisReversed     READ rollAxisReversed       NOTIFY rollAxisReversedChanged)
+    Q_PROPERTY(bool pitchAxisReversed    READ pitchAxisReversed      NOTIFY pitchAxisReversedChanged)
+    Q_PROPERTY(bool yawAxisReversed      READ yawAxisReversed        NOTIFY yawAxisReversedChanged)
+    Q_PROPERTY(bool throttleAxisReversed READ throttleAxisReversed   NOTIFY throttleAxisReversedChanged)
+
+    Q_PROPERTY(bool channel5AxisMapped  READ channel5AxisMapped NOTIFY channel5AxisMappedChanged)
+    Q_PROPERTY(bool channel6AxisMapped  READ channel6AxisMapped NOTIFY channel6AxisMappedChanged)
+    Q_PROPERTY(bool channel7AxisMapped  READ channel7AxisMapped NOTIFY channel7AxisMappedChanged)
+    Q_PROPERTY(bool channel8AxisMapped  READ channel8AxisMapped NOTIFY channel8AxisMappedChanged)
+
+    Q_PROPERTY(bool channel5AxisReversed READ channel5AxisReversed   NOTIFY channel5AxisReversedChanged)
+    Q_PROPERTY(bool channel6AxisReversed READ channel6AxisReversed   NOTIFY channel6AxisReversedChanged)
+    Q_PROPERTY(bool channel7AxisReversed READ channel7AxisReversed   NOTIFY channel7AxisReversedChanged)
+    Q_PROPERTY(bool channel8AxisReversed READ channel8AxisReversed   NOTIFY channel8AxisReversedChanged)
     
     Q_PROPERTY(bool deadbandToggle            READ getDeadbandToggle        WRITE setDeadbandToggle    NOTIFY deadbandToggled)
 
@@ -73,11 +83,19 @@ public:
     bool pitchAxisMapped(void);
     bool yawAxisMapped(void);
     bool throttleAxisMapped(void);
+    bool channel5AxisMapped(void);
+    bool channel6AxisMapped(void);
+    bool channel7AxisMapped(void);
+    bool channel8AxisMapped(void);
     
     bool rollAxisReversed(void);
     bool pitchAxisReversed(void);
     bool yawAxisReversed(void);
     bool throttleAxisReversed(void);
+    bool channel5AxisReversed(void);
+    bool channel6AxisReversed(void);
+    bool channel7AxisReversed(void);
+    bool channel8AxisReversed(void);
     
     bool getDeadbandToggle(void);
     void setDeadbandToggle(bool);
@@ -97,11 +115,19 @@ signals:
     void pitchAxisMappedChanged(bool mapped);
     void yawAxisMappedChanged(bool mapped);
     void throttleAxisMappedChanged(bool mapped);
+    void channel5AxisMappedChanged(bool mapped);
+    void channel6AxisMappedChanged(bool mapped);
+    void channel7AxisMappedChanged(bool mapped);
+    void channel8AxisMappedChanged(bool mapped);
 
     void rollAxisReversedChanged(bool reversed);
     void pitchAxisReversedChanged(bool reversed);
     void yawAxisReversedChanged(bool reversed);
     void throttleAxisReversedChanged(bool reversed);
+    void channel5AxisReversedChanged(bool reversed);
+    void channel6AxisReversedChanged(bool reversed);
+    void channel7AxisReversedChanged(bool reversed);
+    void channel8AxisReversedChanged(bool reversed);
 
     void deadbandToggled(bool value);
     
