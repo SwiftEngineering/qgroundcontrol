@@ -1045,7 +1045,9 @@ void UAS::setExternalControlSetpoint(float roll, float pitch, float yaw, float t
                                                  _vehicle->priorityLink()->mavlinkChannel(),
                                                  &message,
                                                  this->uasId,
-                                                 newPitchCommand, newRollCommand, newThrustCommand, newYawCommand, buttons);
+                                                 newPitchCommand, newRollCommand, newThrustCommand, newYawCommand, 
+                                                 buttons,
+                                                 newChannel5Command, newChannel6Command, newChannel7Command, newChannel8Command);
         }
 
         _vehicle->sendMessageOnLink(_vehicle->priorityLink(), message);
