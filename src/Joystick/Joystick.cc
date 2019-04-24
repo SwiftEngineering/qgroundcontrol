@@ -563,15 +563,15 @@ void Joystick::run(void)
             _lastButtonBits = newButtonBits;
 
              qCDebug(JoystickValuesLog) << "name:roll:pitch:yaw:throttle" 
-                                        << ":channel5:channel6:channel7:channel8" 
-                                        << name() 
+                                        << ":channel5:channel6:channel7:channel8"
+                                        << name()
                                         << roll << -pitch << yaw << throttle
                                         << channel5 << channel6 << channel7 << channel8;
 
             // NOTE: The buttonPressedBits going to MANUAL_CONTROL are currently used by ArduSub.
-            emit manualControl(roll, -pitch, yaw, throttle, 
+            emit manualControl(roll, -pitch, yaw, throttle,
                                channel5, channel6, channel7, channel8,
-                               buttonPressedBits, 
+                               buttonPressedBits,
                                _activeVehicle->joystickMode());
         }
 
@@ -886,4 +886,3 @@ bool Joystick::_validButton(int button)
 {
     return button >= 0 && button < _totalButtonCount;
 }
-

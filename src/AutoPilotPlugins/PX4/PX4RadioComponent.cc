@@ -35,7 +35,7 @@ QString PX4RadioComponent::iconResource(void) const
 
 bool PX4RadioComponent::requiresSetup(void) const
 {
-    return _vehicle->parameterManager()->getParameter(-1, "COM_RC_IN_MODE")->rawValue().toInt() == 1 ? false : true;
+    return _vehicle->parameterManager()->getParameter(-1, "COM_RC_IN_MODE")->rawValue().toInt() != 1 ? true : false;
 }
 
 bool PX4RadioComponent::setupComplete(void) const
@@ -51,16 +51,16 @@ bool PX4RadioComponent::setupComplete(void) const
             }
         }
     }
-    
+
     return true;
 }
 
 QStringList PX4RadioComponent::setupCompleteChangedTriggerList(void) const
 {
     QStringList triggers;
-    
+
     triggers << "COM_RC_IN_MODE" << "RC_MAP_ROLL" << "RC_MAP_PITCH" << "RC_MAP_YAW" << "RC_MAP_THROTTLE";
-    
+
     return triggers;
 }
 
