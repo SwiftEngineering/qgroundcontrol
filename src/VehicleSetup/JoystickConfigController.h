@@ -185,8 +185,7 @@ private:
     const struct stateMachineEntry* _getStateMachineEntry(int step);
     
     void _advanceState(void);
-    // void _advanceStates(void);
-    // void _advanceStates(int numSteps);
+    void _advanceStates(void);
     void _setupCurrentState(void);
     
     bool _validAxis(int axis);
@@ -235,6 +234,7 @@ private:
     static const char* _imageRollRight;
     static const char* _imagePitchUp;
     static const char* _imagePitchDown;
+    static const char* _imageExtraAxes;
     
     int _rgFunctionAxisMapping[Joystick::maxFunction]; ///< Maps from joystick function to axis index. _axisMax indicates axis not set for this function.
 

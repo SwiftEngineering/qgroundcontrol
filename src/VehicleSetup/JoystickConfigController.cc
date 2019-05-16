@@ -42,6 +42,7 @@ const char*  JoystickConfigController::_imageRollLeft =     "joystickRollLeft.pn
 const char*  JoystickConfigController::_imageRollRight =    "joystickRollRight.png";
 const char*  JoystickConfigController::_imagePitchUp =      "joystickPitchUp.png";
 const char*  JoystickConfigController::_imagePitchDown =    "joystickPitchDown.png";
+const char*  JoystickConfigController::_imageExtraAxes =    "joystickExtraPotsAndSwitches.png"
 
 JoystickConfigController::JoystickConfigController(void)
     : _activeJoystick(NULL)
@@ -121,13 +122,13 @@ const JoystickConfigController::stateMachineEntry* JoystickConfigController::_ge
         { Joystick::pitchFunction,     msgPitchUp,         _imagePitchUp,      &JoystickConfigController::_inputStickDetect,       NULL,                                           NULL },
         { Joystick::pitchFunction,     msgPitchDown,       _imagePitchDown,    &JoystickConfigController::_inputStickMin,          NULL,                                           NULL },
         { Joystick::pitchFunction,     msgPitchCenter,     _imageCenter,       &JoystickConfigController::_inputCenterWait,        NULL,                                           NULL },
-        { Joystick::channel5Function,  msgChannel5Min,     _imagePitchUp,      &JoystickConfigController::_inputStickDetect,       NULL,                                           NULL },
+        { Joystick::channel5Function,  msgChannel5Min,     _imagePitchUp,      &JoystickConfigController::_inputStickDetect,       NULL,      &JoystickConfigController::_advanceStates },
         { Joystick::channel5Function,  msgChannel5Max,     _imagePitchDown,    &JoystickConfigController::_inputStickMin,          NULL,                                           NULL },
-        { Joystick::channel6Function,  msgChannel6Min,     _imagePitchUp,      &JoystickConfigController::_inputStickDetect,       NULL,                                           NULL },
+        { Joystick::channel6Function,  msgChannel6Min,     _imagePitchUp,      &JoystickConfigController::_inputStickDetect,       NULL,      &JoystickConfigController::_advanceStates },
         { Joystick::channel6Function,  msgChannel6Max,     _imagePitchDown,    &JoystickConfigController::_inputStickMin,          NULL,                                           NULL },
-        { Joystick::channel7Function,  msgChannel7Min,     _imagePitchUp,      &JoystickConfigController::_inputStickDetect,       NULL,                                           NULL },
+        { Joystick::channel7Function,  msgChannel7Min,     _imagePitchUp,      &JoystickConfigController::_inputStickDetect,       NULL,      &JoystickConfigController::_advanceStates },
         { Joystick::channel7Function,  msgChannel7Max,     _imagePitchDown,    &JoystickConfigController::_inputStickMin,          NULL,                                           NULL },
-        { Joystick::channel8Function,  msgChannel8Min,     _imagePitchUp,      &JoystickConfigController::_inputStickDetect,       NULL,                                           NULL },
+        { Joystick::channel8Function,  msgChannel8Min,     _imagePitchUp,      &JoystickConfigController::_inputStickDetect,       NULL,      &JoystickConfigController::_advanceStates },
         { Joystick::channel8Function,  msgChannel8Max,     _imagePitchDown,    &JoystickConfigController::_inputStickMin,          NULL,                                           NULL },
         { Joystick::maxFunction,       msgComplete,        _imageCenter,       NULL,                                               &JoystickConfigController::_writeCalibration,   NULL },
     };
@@ -143,18 +144,12 @@ void JoystickConfigController::_advanceState(void)
     _setupCurrentState();
 }
 
-// void JoystickConfigController::_advanceStates(void)
-// {
-//     _currentStep = _currentStep + 2;
-//     _setupCurrentState();
-// }
-
-// void JoystickConfigController::_advanceStates(int numSteps)
-// {
-//     _currentStep = _currentStep + numSteps;
-//     _setupCurrentState();
-// }
-
+/// @brief Advances the state machine by two steps, specific use case: skip a channel in calibration.
+void JoystickConfigController::_advanceStates(void)
+{
+     _currentStep = _currentStep + 2;
+     _setupCurrentState();
+}
 
 /// @brief Sets up the state machine according to the current step from _currentStep.
 void JoystickConfigController::_setupCurrentState(void)
