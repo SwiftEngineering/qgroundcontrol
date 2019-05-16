@@ -886,4 +886,3 @@ bool Joystick::_validButton(int button)
 {
     return button >= 0 && button < _totalButtonCount;
 }
-

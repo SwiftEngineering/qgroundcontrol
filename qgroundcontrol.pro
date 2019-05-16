@@ -601,6 +601,7 @@ HEADERS += \
     src/Settings/BrandImageSettings.h \
     src/Settings/FlightMapSettings.h \
     src/Settings/FlyViewSettings.h \
+    src/Settings/OfflineMapsSettings.h \
     src/Settings/PlanViewSettings.h \
     src/Settings/RTKSettings.h \
     src/Settings/SettingsGroup.h \
@@ -626,6 +627,7 @@ HEADERS += \
     src/uas/UASInterface.h \
     src/uas/UASMessageHandler.h \
     src/UTM.h \
+    src/AnalyzeView/MavlinkConsoleController.h \
 
 
 AndroidBuild {
@@ -661,7 +663,6 @@ HEADERS += \
 !MobileBuild {
 HEADERS += \
     src/AnalyzeView/GeoTagController.h \
-    src/AnalyzeView/MavlinkConsoleController.h \
     src/GPS/Drivers/src/gps_helper.h \
     src/GPS/Drivers/src/rtcm.h \
     src/GPS/Drivers/src/ashtech.h \
@@ -804,6 +805,7 @@ SOURCES += \
     src/Settings/BrandImageSettings.cc \
     src/Settings/FlightMapSettings.cc \
     src/Settings/FlyViewSettings.cc \
+    src/Settings/OfflineMapsSettings.cc \
     src/Settings/PlanViewSettings.cc \
     src/Settings/RTKSettings.cc \
     src/Settings/SettingsGroup.cc \
@@ -828,6 +830,7 @@ SOURCES += \
     src/uas/UAS.cc \
     src/uas/UASMessageHandler.cc \
     src/UTM.cpp \
+    src/AnalyzeView/MavlinkConsoleController.cc \
 
 DebugBuild {
 SOURCES += \
@@ -850,7 +853,6 @@ contains(DEFINES, QGC_ENABLE_BLUETOOTH) {
 !MobileBuild {
 SOURCES += \
     src/AnalyzeView/GeoTagController.cc \
-    src/AnalyzeView/MavlinkConsoleController.cc \
     src/GPS/Drivers/src/gps_helper.cpp \
     src/GPS/Drivers/src/rtcm.cpp \
     src/GPS/Drivers/src/ashtech.cpp \
@@ -960,6 +962,16 @@ SOURCES += \
         src/VehicleSetup/FirmwareUpgradeController.cc \
         src/VehicleSetup/PX4FirmwareUpgradeThread.cc \
 }}
+
+# ArduPilot Specific
+
+ArdupilotEnabled {
+    HEADERS += \
+        src/Settings/APMMavlinkStreamRateSettings.h \
+
+    SOURCES += \
+        src/Settings/APMMavlinkStreamRateSettings.cc \
+}
 
 # ArduPilot FirmwarePlugin
 
@@ -1139,6 +1151,23 @@ contains (DEFINES, QGC_GST_TAISYNC_ENABLED) {
 }
 
 #-------------------------------------------------------------------------------------
+# Microhard
+contains (DEFINES, QGC_GST_MICROHARD_ENABLED) {
+    INCLUDEPATH += \
+        src/Microhard
+
+    HEADERS += \
+        src/Microhard/MicrohardManager.h \
+        src/Microhard/MicrohardHandler.h \
+        src/Microhard/MicrohardSettings.h \
+
+    SOURCES += \
+        src/Microhard/MicrohardManager.cc \
+        src/Microhard/MicrohardHandler.cc \
+        src/Microhard/MicrohardSettings.cc \
+}
+
+#-------------------------------------------------------------------------------------
 # AirMap
 
 contains (DEFINES, QGC_AIRMAP_ENABLED) {
@@ -1278,4 +1307,8 @@ contains (CONFIG, QGC_DISABLE_BUILD_SETUP) {
 # Installer targets
 #
 
-include(QGCInstaller.pri)
+contains (CONFIG, QGC_DISABLE_INSTALLER_SETUP) {
+    message("Disable standard installer setup")
+} else {
+    include(QGCInstaller.pri)
+}
