@@ -310,6 +310,7 @@
         <file alias="joystickThrottleUp.png">resources/calibration/joystick/mode1/joystickThrottleUp.png</file>
         <file alias="joystickYawLeft.png">resources/calibration/joystick/mode1/joystickYawLeft.png</file>
         <file alias="joystickYawRight.png">resources/calibration/joystick/mode1/joystickYawRight.png</file>
+        <file alias="joystickExtraPotsAndSwitches">resources/calibration/joystick/mode4/joystickExtraPotsAndSwitches.png</file>
     </qresource>
     <qresource prefix="/qml/calibration/joystick/mode2">
         <file alias="joystickCenter.png">resources/calibration/joystick/mode2/joystickCenter.png</file>
@@ -321,6 +322,7 @@
         <file alias="joystickThrottleUp.png">resources/calibration/joystick/mode2/joystickThrottleUp.png</file>
         <file alias="joystickYawLeft.png">resources/calibration/joystick/mode2/joystickYawLeft.png</file>
         <file alias="joystickYawRight.png">resources/calibration/joystick/mode2/joystickYawRight.png</file>
+        <file alias="joystickExtraPotsAndSwitches.png">resources/calibration/joystick/mode4/joystickExtraPotsAndSwitches.png</file>
     </qresource>
     <qresource prefix="/qml/calibration/joystick/mode3">
         <file alias="joystickCenter.png">resources/calibration/joystick/mode3/joystickCenter.png</file>
@@ -332,6 +334,7 @@
         <file alias="joystickThrottleUp.png">resources/calibration/joystick/mode3/joystickThrottleUp.png</file>
         <file alias="joystickYawLeft.png">resources/calibration/joystick/mode3/joystickYawLeft.png</file>
         <file alias="joystickYawRight.png">resources/calibration/joystick/mode3/joystickYawRight.png</file>
+        <file alias="joystickExtraPotsAndSwitches.png">resources/calibration/joystick/mode4/joystickExtraPotsAndSwitches.png</file>
     </qresource>
     <qresource prefix="/qml/calibration/joystick/mode4">
         <file alias="joystickCenter.png">resources/calibration/joystick/mode4/joystickCenter.png</file>
@@ -343,5 +346,6 @@
         <file alias="joystickThrottleUp.png">resources/calibration/joystick/mode4/joystickThrottleUp.png</file>
         <file alias="joystickYawLeft.png">resources/calibration/joystick/mode4/joystickYawLeft.png</file>
         <file alias="joystickYawRight.png">resources/calibration/joystick/mode4/joystickYawRight.png</file>
+        <file alias="joystickExtraPotsAndSwitches.png">resources/calibration/joystick/mode4/joystickExtraPotsAndSwitches.png</file>
     </qresource>
 </RCC>
