@@ -42,7 +42,7 @@ const char*  JoystickConfigController::_imageRollLeft =     "joystickRollLeft.pn
 const char*  JoystickConfigController::_imageRollRight =    "joystickRollRight.png";
 const char*  JoystickConfigController::_imagePitchUp =      "joystickPitchUp.png";
 const char*  JoystickConfigController::_imagePitchDown =    "joystickPitchDown.png";
-const char*  JoystickConfigController::_imageExtraAxes =    "joystickExtraPotsAndSwitches.png"
+const char*  JoystickConfigController::_imageExtraAxes =    "joystickExtraPotsAndSwitches.png";
 
 JoystickConfigController::JoystickConfigController(void)
     : _activeJoystick(NULL)
