@@ -1309,13 +1309,15 @@ void Vehicle::_handleAutopilotVersion(LinkInterface *link, mavlink_message_t& me
 
         // PX4 Firmware stores the first 16 characters of the git hash as binary, with the individual bytes in reverse order
         _gitHash = "";
-        QByteArray array((char*)autopilotVersion.flight_custom_version, 8);
         for (int i = 7; i >= 0; i--) {
             _gitHash.append(QString("%1").arg(autopilotVersion.flight_custom_version[i], 2, 16, QChar('0')));
         }
     } else {
         // APM Firmware stores the first 8 characters of the git hash as an ASCII character string
-        _gitHash = QString::fromUtf8((char*)autopilotVersion.flight_custom_version, 8);
+        char nullStr[9];
+        strncpy(nullStr, (char*)autopilotVersion.flight_custom_version, 8);
+        nullStr[8] = 0;
+        _gitHash = nullStr;
     }
     if (_toolbox->corePlugin()->options()->checkFirmwareVersion()) {
         _firmwarePlugin->checkIfIsLatestStable(this);
@@ -1898,10 +1900,6 @@ void Vehicle::_linkInactiveOrDeleted(LinkInterface* link)
     qCDebug(VehicleLog) << "_linkInactiveOrDeleted linkCount" << _links.count();
 
     _links.removeOne(link);
-
-    if (_priorityLink.data() == link) {
-        _priorityLink.clear();
-    }
 
     _updatePriorityLink(true /* updateActive */, true /* sendCommand */);
 
