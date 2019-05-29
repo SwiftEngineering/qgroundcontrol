@@ -53,7 +53,11 @@ const char* Joystick::_rgFunctionSettingsKey[Joystick::maxFunction] = {
     "RollAxis",
     "PitchAxis",
     "YawAxis",
-    "ThrottleAxis"
+    "ThrottleAxis",
+    "Channel5Axis",
+    "Channel6Axis",
+    "Channel7Axis",
+    "Channel8Axis"
 };
 
 int Joystick::_transmitterMode = 2;
@@ -82,7 +86,6 @@ Joystick::Joystick(const QString& name, int axisCount, int buttonCount, int hatC
     , _pollingStartedForCalibration(false)
     , _multiVehicleManager(multiVehicleManager)
 {
-
     _rgAxisValues = new int[_axisCount];
     _rgCalibration = new Calibration_t[_axisCount];
     _rgButtonValues = new bool[_totalButtonCount];
@@ -134,6 +137,10 @@ void Joystick::_setDefaultCalibration(void) {
     _rgFunctionAxis[pitchFunction]      = 3;
     _rgFunctionAxis[yawFunction]        = 0;
     _rgFunctionAxis[throttleFunction]   = 1;
+    _rgFunctionAxis[channel5Function]   = 4;
+    _rgFunctionAxis[channel6Function]   = 5;
+    _rgFunctionAxis[channel7Function]   = 6;
+    _rgFunctionAxis[channel8Function]   = 7;
 
     _exponential = 0;
     _accumulator = false;
@@ -332,11 +339,11 @@ void Joystick::_saveSettings(void)
 // Relative mappings of axis functions between different TX modes
 int Joystick::_mapFunctionMode(int mode, int function) {
 
-    static const int mapping[][4] = {
-        { 2, 1, 0, 3 },
-        { 2, 3, 0, 1 },
-        { 0, 1, 2, 3 },
-        { 0, 3, 2, 1 }};
+    static const int mapping[][8] = {
+        { 2, 1, 0, 3, 4, 5, 6, 7 },
+        { 2, 3, 0, 1, 4, 5, 6, 7 },
+        { 0, 1, 2, 3, 4, 5, 6, 7 },
+        { 0, 3, 2, 1, 4, 5, 6, 7 }};
 
     return mapping[mode-1][function];
 }
@@ -473,6 +480,18 @@ void Joystick::run(void)
                     axis = _rgFunctionAxis[throttleFunction];
             float   throttle = _adjustRange(_rgAxisValues[axis], _rgCalibration[axis], _throttleMode==ThrottleModeDownZero?false:_deadband);
 
+                    axis = _rgFunctionAxis[channel5Function];
+            float   channel5 = _adjustRange(_rgAxisValues[axis], _rgCalibration[axis], _deadband);
+
+                    axis = _rgFunctionAxis[channel6Function];
+            float   channel6 = _adjustRange(_rgAxisValues[axis], _rgCalibration[axis], _deadband);
+
+                    axis = _rgFunctionAxis[channel7Function];
+            float   channel7 = _adjustRange(_rgAxisValues[axis], _rgCalibration[axis], _deadband);
+
+                    axis = _rgFunctionAxis[channel8Function];
+            float   channel8 = _adjustRange(_rgAxisValues[axis], _rgCalibration[axis], _deadband);
+
             if ( _accumulator ) {
                 static float throttle_accu = 0.f;
 
@@ -543,10 +562,17 @@ void Joystick::run(void)
 
             _lastButtonBits = newButtonBits;
 
-            qCDebug(JoystickValuesLog) << "name:roll:pitch:yaw:throttle" << name() << roll << -pitch << yaw << throttle;
+             qCDebug(JoystickValuesLog) << "name:roll:pitch:yaw:throttle" 
+                                        << ":channel5:channel6:channel7:channel8" 
+                                        << name() 
+                                        << roll << -pitch << yaw << throttle
+                                        << channel5 << channel6 << channel7 << channel8;
 
             // NOTE: The buttonPressedBits going to MANUAL_CONTROL are currently used by ArduSub.
-            emit manualControl(roll, -pitch, yaw, throttle, buttonPressedBits, _activeVehicle->joystickMode());
+            emit manualControl(roll, -pitch, yaw, throttle, 
+                               channel5, channel6, channel7, channel8,
+                               buttonPressedBits, 
+                               _activeVehicle->joystickMode());
         }
 
         // Sleep. Update rate of joystick is by default 25 Hz
@@ -860,4 +886,3 @@ bool Joystick::_validButton(int button)
 {
     return button >= 0 && button < _totalButtonCount;
 }
-

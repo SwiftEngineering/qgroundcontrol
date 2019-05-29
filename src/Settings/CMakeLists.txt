@@ -1,10 +1,12 @@
 
 add_library(Settings
+	APMMavlinkStreamRateSettings.cc
 	AppSettings.cc
 	AutoConnectSettings.cc
 	BrandImageSettings.cc
 	FlightMapSettings.cc
 	FlyViewSettings.cc
+	OfflineMapsSettings.cc
 	PlanViewSettings.cc
 	RTKSettings.cc
 	SettingsGroup.cc

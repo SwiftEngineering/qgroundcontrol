@@ -42,6 +42,7 @@ const char*  JoystickConfigController::_imageRollLeft =     "joystickRollLeft.pn
 const char*  JoystickConfigController::_imageRollRight =    "joystickRollRight.png";
 const char*  JoystickConfigController::_imagePitchUp =      "joystickPitchUp.png";
 const char*  JoystickConfigController::_imagePitchDown =    "joystickPitchDown.png";
+const char*  JoystickConfigController::_imageExtraAxes =    "joystickExtraPotsAndSwitches.png";
 
 JoystickConfigController::JoystickConfigController(void)
     : _activeJoystick(NULL)
@@ -99,6 +100,14 @@ const JoystickConfigController::stateMachineEntry* JoystickConfigController::_ge
     static const char* msgPitchDown =       "Move the Pitch stick all the way down and hold it there...";
     static const char* msgPitchUp =         "Move the Pitch stick all the way up and hold it there...";
     static const char* msgPitchCenter =     "Allow the Pitch stick to move back to center...";
+    static const char* msgChannel5Min =     "Move the channel 5 stick/pot/slider/switch to its minimum and hold it there...";
+    static const char* msgChannel5Max =     "Move the channel 5 stick/pot/slider/switch to its maximum and hold it there...";
+    static const char* msgChannel6Min =     "Move the channel 6 stick/pot/slider/switch to its minimum and hold it there...";
+    static const char* msgChannel6Max =     "Move the channel 6 stick/pot/slider/switch to its maximum and hold it there...";
+    static const char* msgChannel7Min =     "Move the channel 7 stick/pot/slider/switch to its minimum and hold it there...";
+    static const char* msgChannel7Max =     "Move the channel 7 stick/pot/slider/switch to its maximum and hold it there...";
+    static const char* msgChannel8Min =     "Move the channel 8 stick/pot/slider/switch to its minimum and hold it there...";
+    static const char* msgChannel8Max =     "Move the channel 8 stick/pot/slider/switch to its maximum and hold it there...";
     static const char* msgComplete =        "All settings have been captured. Click Next to enable the joystick.";
     
     static const stateMachineEntry rgStateMachine[] = {
@@ -113,6 +122,14 @@ const JoystickConfigController::stateMachineEntry* JoystickConfigController::_ge
         { Joystick::pitchFunction,     msgPitchUp,         _imagePitchUp,      &JoystickConfigController::_inputStickDetect,       NULL,                                           NULL },
         { Joystick::pitchFunction,     msgPitchDown,       _imagePitchDown,    &JoystickConfigController::_inputStickMin,          NULL,                                           NULL },
         { Joystick::pitchFunction,     msgPitchCenter,     _imageCenter,       &JoystickConfigController::_inputCenterWait,        NULL,                                           NULL },
+        { Joystick::channel5Function,  msgChannel5Min,     _imagePitchUp,      &JoystickConfigController::_inputStickDetect,       NULL,      &JoystickConfigController::_advanceStates },
+        { Joystick::channel5Function,  msgChannel5Max,     _imagePitchDown,    &JoystickConfigController::_inputStickMin,          NULL,                                           NULL },
+        { Joystick::channel6Function,  msgChannel6Min,     _imagePitchUp,      &JoystickConfigController::_inputStickDetect,       NULL,      &JoystickConfigController::_advanceStates },
+        { Joystick::channel6Function,  msgChannel6Max,     _imagePitchDown,    &JoystickConfigController::_inputStickMin,          NULL,                                           NULL },
+        { Joystick::channel7Function,  msgChannel7Min,     _imagePitchUp,      &JoystickConfigController::_inputStickDetect,       NULL,      &JoystickConfigController::_advanceStates },
+        { Joystick::channel7Function,  msgChannel7Max,     _imagePitchDown,    &JoystickConfigController::_inputStickMin,          NULL,                                           NULL },
+        { Joystick::channel8Function,  msgChannel8Min,     _imagePitchUp,      &JoystickConfigController::_inputStickDetect,       NULL,      &JoystickConfigController::_advanceStates },
+        { Joystick::channel8Function,  msgChannel8Max,     _imagePitchDown,    &JoystickConfigController::_inputStickMin,          NULL,                                           NULL },
         { Joystick::maxFunction,       msgComplete,        _imageCenter,       NULL,                                               &JoystickConfigController::_writeCalibration,   NULL },
     };
     
@@ -127,6 +144,12 @@ void JoystickConfigController::_advanceState(void)
     _setupCurrentState();
 }
 
+/// @brief Advances the state machine by two steps, specific use case: skip a channel in calibration.
+void JoystickConfigController::_advanceStates(void)
+{
+     _currentStep = _currentStep + 2;
+     _setupCurrentState();
+}
 
 /// @brief Sets up the state machine according to the current step from _currentStep.
 void JoystickConfigController::_setupCurrentState(void)
@@ -433,7 +456,7 @@ void JoystickConfigController::_inputCenterWait(Joystick::AxisFunction_t functio
 /// @brief Resets internal calibration values to their initial state in preparation for a new calibration sequence.
 void JoystickConfigController::_resetInternalCalibrationValues(void)
 {
-    // Set all raw axiss to not reversed and center point values
+    // Set all raw axes to not reversed and center point values
     for (int i=0; i<_axisCount; i++) {
         struct AxisInfo* info = &_rgAxisInfo[i];
         info->function = Joystick::maxFunction;
@@ -519,6 +542,10 @@ void JoystickConfigController::_validateCalibration(void)
                 case Joystick::yawFunction:
                 case Joystick::rollFunction:
                 case Joystick::pitchFunction:
+                case Joystick::channel5Function:
+                case Joystick::channel6Function:
+                case Joystick::channel7Function:
+                case Joystick::channel8Function:
                     // Make sure trim is within min/max
                     if (info->axisTrim < info->axisMin) {
                         info->axisTrim = info->axisMin;
@@ -695,6 +722,26 @@ bool JoystickConfigController::throttleAxisMapped(void)
     return _rgFunctionAxisMapping[Joystick::throttleFunction] != _axisNoAxis;
 }
 
+bool JoystickConfigController::channel5AxisMapped(void)
+{
+    return _rgFunctionAxisMapping[Joystick::channel5Function] != _axisNoAxis;
+}
+
+bool JoystickConfigController::channel6AxisMapped(void)
+{
+    return _rgFunctionAxisMapping[Joystick::channel6Function] != _axisNoAxis;
+}
+
+bool JoystickConfigController::channel7AxisMapped(void)
+{
+    return _rgFunctionAxisMapping[Joystick::channel7Function] != _axisNoAxis;
+}
+
+bool JoystickConfigController::channel8AxisMapped(void)
+{
+    return _rgFunctionAxisMapping[Joystick::channel8Function] != _axisNoAxis;
+}
+
 bool JoystickConfigController::rollAxisReversed(void)
 {
     if (_rgFunctionAxisMapping[Joystick::rollFunction] != _axisNoAxis) {
@@ -731,6 +778,42 @@ bool JoystickConfigController::throttleAxisReversed(void)
     }
 }
 
+bool JoystickConfigController::channel5AxisReversed(void)
+{
+    if (_rgFunctionAxisMapping[Joystick::channel5Function] != _axisNoAxis) {
+        return _rgAxisInfo[_rgFunctionAxisMapping[Joystick::channel5Function]].reversed;
+    } else {
+        return false;
+    }
+}
+
+bool JoystickConfigController::channel6AxisReversed(void)
+{
+    if (_rgFunctionAxisMapping[Joystick::channel6Function] != _axisNoAxis) {
+        return _rgAxisInfo[_rgFunctionAxisMapping[Joystick::channel6Function]].reversed;
+    } else {
+        return false;
+    }
+}
+
+bool JoystickConfigController::channel7AxisReversed(void)
+{
+    if (_rgFunctionAxisMapping[Joystick::channel7Function] != _axisNoAxis) {
+        return _rgAxisInfo[_rgFunctionAxisMapping[Joystick::channel7Function]].reversed;
+    } else {
+        return false;
+    }
+}
+
+bool JoystickConfigController::channel8AxisReversed(void)
+{
+    if (_rgFunctionAxisMapping[Joystick::channel8Function] != _axisNoAxis) {
+        return _rgAxisInfo[_rgFunctionAxisMapping[Joystick::channel8Function]].reversed;
+    } else {
+        return false;
+    }
+}
+
 void JoystickConfigController::setTransmitterMode(int mode)
 {
     if (mode > 0 && mode <= 4) {
@@ -751,11 +834,19 @@ void JoystickConfigController::_signalAllAttitudeValueChanges(void)
     emit pitchAxisMappedChanged(pitchAxisMapped());
     emit yawAxisMappedChanged(yawAxisMapped());
     emit throttleAxisMappedChanged(throttleAxisMapped());
+    emit channel5AxisMappedChanged(channel5AxisMapped());
+    emit channel6AxisMappedChanged(channel6AxisMapped());
+    emit channel7AxisMappedChanged(channel7AxisMapped());
+    emit channel8AxisMappedChanged(channel8AxisMapped());
     
     emit rollAxisReversedChanged(rollAxisReversed());
     emit pitchAxisReversedChanged(pitchAxisReversed());
     emit yawAxisReversedChanged(yawAxisReversed());
     emit throttleAxisReversedChanged(throttleAxisReversed());
+    emit channel5AxisReversedChanged(channel5AxisReversed());
+    emit channel6AxisReversedChanged(channel6AxisReversed());
+    emit channel7AxisReversedChanged(channel7AxisReversed());
+    emit channel8AxisReversedChanged(channel8AxisReversed());
 
     emit transmitterModeChanged(_transmitterMode);
 }

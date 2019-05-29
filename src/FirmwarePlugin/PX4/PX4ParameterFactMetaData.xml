@@ -454,6 +454,20 @@ Set to 2 to use heading from motion capture</short_desc>
       <reboot_required>true</reboot_required>
     </parameter>
   </group>
+  <group name="Chip">
+    <parameter category="Developer" default="0" name="SYS_FORCE_F7DC" type="INT32">
+      <short_desc>Force F7 D cache on and disregard errata 1259864 data corruption in
+a sequence of write-through stores and loads on ARM M7 silicon
+Fault Status: Present in r0p1, r0p2, r1p0 and r1p1. Fixed in r1p2</short_desc>
+      <min>0</min>
+      <max>2</max>
+      <values>
+        <value code="0">if Eratta exits turn dcache off else leave it on</value>
+        <value code="1">Force it off</value>
+        <value code="2">Force it on</value>
+      </values>
+    </parameter>
+  </group>
   <group name="Circuit Breaker">
     <parameter category="Developer" default="0" name="CBRK_AIRSPD_CHK" type="INT32">
       <short_desc>Circuit breaker for airspeed sensor</short_desc>
@@ -643,15 +657,6 @@ Note: ekf2 will limit the delta velocity bias estimate magnitude to be less than
       <long_desc>After this amount of seconds without datalink the data link lost mode triggers</long_desc>
       <min>5</min>
       <max>300</max>
-      <unit>s</unit>
-      <decimal>1</decimal>
-      <increment>0.5</increment>
-    </parameter>
-    <parameter default="0" name="COM_DL_REG_T" type="INT32">
-      <short_desc>Datalink regain time threshold</short_desc>
-      <long_desc>After a data link loss: after this this amount of seconds with a healthy datalink the 'datalink loss' flag is set back to false</long_desc>
-      <min>0</min>
-      <max>3</max>
       <unit>s</unit>
       <decimal>1</decimal>
       <increment>0.5</increment>
@@ -851,6 +856,13 @@ Note: ekf2 will limit the delta velocity bias estimate magnitude to be less than
         <value code="2">Land mode</value>
         <value code="3">Return mode at critically low level, Land mode at current position if reaching dangerously low levels</value>
       </values>
+    </parameter>
+    <parameter default="100" name="COM_OA_BOOT_T" type="INT32">
+      <short_desc>Set avoidance system bootup timeout</short_desc>
+      <long_desc>The avoidance system running on the companion computer is expected to boot within this time and start providing trajectory points. If no avoidance system is detected a MAVLink warning message is sent.</long_desc>
+      <min>0</min>
+      <max>200</max>
+      <unit>s</unit>
     </parameter>
     <parameter default="0.0" name="COM_OF_LOSS_T" type="FLOAT">
       <short_desc>Time-out to wait when offboard connection is lost before triggering offboard lost action.
@@ -1071,7 +1083,7 @@ This parameter controls the time constant of the decay</short_desc>
     </parameter>
     <parameter default="1" name="EKF2_AID_MASK" type="INT32">
       <short_desc>Integer bitmask controlling data fusion and aiding methods</short_desc>
-      <long_desc>Set bits in the following positions to enable: 0 : Set to true to use GPS data if available 1 : Set to true to use optical flow data if available 2 : Set to true to inhibit IMU bias estimation 3 : Set to true to enable vision position fusion 4 : Set to true to enable vision yaw fusion. Cannot be used if bit position 7 is true. 5 : Set to true to enable multi-rotor drag specific force fusion 6 : set to true if the EV observations are in a non NED reference frame and need to be rotated before being used 7 : Set to true to enable GPS yaw fusion. Cannot be used if bit position 4 is true.</long_desc>
+      <long_desc>Set bits in the following positions to enable: 0 : Set to true to use GPS data if available 1 : Set to true to use optical flow data if available 2 : Set to true to inhibit IMU delta velocity bias estimation 3 : Set to true to enable vision position fusion 4 : Set to true to enable vision yaw fusion. Cannot be used if bit position 7 is true. 5 : Set to true to enable multi-rotor drag specific force fusion 6 : set to true if the EV observations are in a non NED reference frame and need to be rotated before being used 7 : Set to true to enable GPS yaw fusion. Cannot be used if bit position 4 is true.</long_desc>
       <min>0</min>
       <max>255</max>
       <reboot_required>true</reboot_required>
@@ -1259,6 +1271,22 @@ Increasing it makes the multi-rotor wind estimates adjust more slowly</short_des
       <unit>rad/sec</unit>
       <decimal>2</decimal>
       <reboot_required>true</reboot_required>
+    </parameter>
+    <parameter default="0.0" name="EKF2_GND_EFF_DZ" type="FLOAT">
+      <short_desc>Baro deadzone range for height fusion</short_desc>
+      <long_desc>Sets the value of deadzone applied to negative baro innovations. Deadzone is enabled when EKF2_GND_EFF_DZ &gt; 0.</long_desc>
+      <min>0.0</min>
+      <max>10.0</max>
+      <unit>M</unit>
+      <decimal>1</decimal>
+    </parameter>
+    <parameter default="0.5" name="EKF2_GND_MAX_HGT" type="FLOAT">
+      <short_desc>Height above ground level for ground effect zone</short_desc>
+      <long_desc>Sets the maximum distance to the ground level where negative baro innovations are expected.</long_desc>
+      <min>0.0</min>
+      <max>5.0</max>
+      <unit>M</unit>
+      <decimal>1</decimal>
     </parameter>
     <parameter default="245" name="EKF2_GPS_CHECK" type="INT32">
       <short_desc>Integer bitmask controlling GPS checks</short_desc>
@@ -1615,10 +1643,18 @@ If the baro height estimate rises during forward flight, then this will be a neg
       <max>0.5</max>
       <decimal>2</decimal>
     </parameter>
-    <parameter default="0.0" name="EKF2_PCOEF_Y" type="FLOAT">
-      <short_desc>Pressure position error coefficient for the Y axis.
-This is the ratio of static pressure error to dynamic pressure generated by a wind relative velocity along the Y body axis.
-If the baro height estimate rises during sideways flight, then this will be a negative number</short_desc>
+    <parameter default="0.0" name="EKF2_PCOEF_YN" type="FLOAT">
+      <short_desc>Pressure position error coefficient for the negative Y axis.
+This is the ratio of static pressure error to dynamic pressure generated by a wind relative velocity along the negative Y (LH) body axis.
+If the baro height estimate rises during sideways flight to the left, then this will be a negative number</short_desc>
+      <min>-0.5</min>
+      <max>0.5</max>
+      <decimal>2</decimal>
+    </parameter>
+    <parameter default="0.0" name="EKF2_PCOEF_YP" type="FLOAT">
+      <short_desc>Pressure position error coefficient for the positive Y axis.
+This is the ratio of static pressure error to dynamic pressure generated by a wind relative velocity along the positive Y (RH) body axis.
+If the baro height estimate rises during sideways flight to the right, then this will be a negative number</short_desc>
       <min>-0.5</min>
       <max>0.5</max>
       <decimal>2</decimal>
@@ -2275,13 +2311,10 @@ This is the ratio of static pressure error to dynamic pressure generated by a wi
       <decimal>1</decimal>
       <increment>0.5</increment>
     </parameter>
-    <parameter default="1" name="FW_LND_EARLYCFG" type="INT32">
+    <parameter default="0" name="FW_LND_EARLYCFG" type="INT32">
       <short_desc>Early landing configuration deployment</short_desc>
-      <long_desc>When set to 0/disabled, the landing configuration (flaps, landing airspeed, etc.) is only activated on the final approach to landing. When set to 1/enabled, it is already activated when entering the final loiter-down (loiter-to-alt) WP before the landing approach. This shifts the (often large) altitude and airspeed errors caused by the configuration change away from the ground such that these are not so critical. It also gives the controller enough time to adapt to the new configuration such that the landing approach starts with a cleaner initial state.</long_desc>
-      <values>
-        <value code="0">Disable early land configuration deployment</value>
-        <value code="1">Enable early land configuration deployment</value>
-      </values>
+      <long_desc>When disabled, the landing configuration (flaps, landing airspeed, etc.) is only activated on the final approach to landing. When enabled, it is already activated when entering the final loiter-down (loiter-to-alt) waypoint before the landing approach. This shifts the (often large) altitude and airspeed errors caused by the configuration change away from the ground such that these are not so critical. It also gives the controller enough time to adapt to the new configuration such that the landing approach starts with a cleaner initial state.</long_desc>
+      <boolean />
     </parameter>
     <parameter default="3.0" name="FW_LND_FLALT" type="FLOAT">
       <short_desc>Landing flare altitude (relative to landing altitude)</short_desc>
@@ -3157,6 +3190,14 @@ Value 0 turns the functionality off</short_desc>
       <unit>s</unit>
       <decimal>2</decimal>
     </parameter>
+    <parameter default="0.3" name="LNDMC_LOW_T_THR" type="FLOAT">
+      <short_desc>Low throttle detection threshold</short_desc>
+      <long_desc>Defines the commanded throttle value below which the land detector considers the vehicle to have "low thrust". This is one condition that is used to detect the ground contact state. The value is calculated as val = (MPC_THR_HOVER - MPC_THR_MIN) * LNDMC_LOW_T_THR + MPC_THR_MIN Increase this value if the system takes long time to detect landing.</long_desc>
+      <min>0.1</min>
+      <max>0.9</max>
+      <unit>norm</unit>
+      <decimal>2</decimal>
+    </parameter>
     <parameter default="20.0" name="LNDMC_ROT_MAX" type="FLOAT">
       <short_desc>Multicopter max rotation</short_desc>
       <long_desc>Maximum allowed angular velocity around each axis allowed in the landed state.</long_desc>
@@ -3560,6 +3601,7 @@ Used to calculate increased terrain random walk nosie due to movement</short_des
         <value code="4">Magic</value>
         <value code="5">Config</value>
         <value code="7">Minimal</value>
+        <value code="8">External Vision</value>
       </values>
     </parameter>
     <parameter default="1200" name="MAV_0_RATE" type="INT32">
@@ -3602,6 +3644,7 @@ Used to calculate increased terrain random walk nosie due to movement</short_des
         <value code="4">Magic</value>
         <value code="5">Config</value>
         <value code="7">Minimal</value>
+        <value code="8">External Vision</value>
       </values>
     </parameter>
     <parameter default="0" name="MAV_1_RATE" type="INT32">
@@ -3644,6 +3687,7 @@ Used to calculate increased terrain random walk nosie due to movement</short_des
         <value code="4">Magic</value>
         <value code="5">Config</value>
         <value code="7">Minimal</value>
+        <value code="8">External Vision</value>
       </values>
     </parameter>
     <parameter default="0" name="MAV_2_RATE" type="INT32">
@@ -3814,6 +3858,10 @@ Used to calculate increased terrain random walk nosie due to movement</short_des
         <value code="5">Hold mode</value>
       </values>
     </parameter>
+    <parameter default="0" name="COM_OBS_AVOID" type="INT32">
+      <short_desc>Flag to enable obstacle avoidance</short_desc>
+      <boolean />
+    </parameter>
     <parameter default="0" name="COM_POSCTL_NAVL" type="INT32">
       <short_desc>Position control navigation loss response</short_desc>
       <long_desc>This sets the flight mode that will be used if navigation accuracy is no longer adequate for position control. Navigation accuracy checks can be disabled using the CBRK_VELPOSERR parameter, but doing so will remove protection for all flight modes.</long_desc>
@@ -3885,6 +3933,11 @@ Used to calculate increased terrain random walk nosie due to movement</short_des
       <unit>m</unit>
       <decimal>1</decimal>
       <increment>0.5</increment>
+    </parameter>
+    <parameter default="0" name="MIS_TAKEOFF_REQ" type="INT32">
+      <short_desc>Take-off waypoint required</short_desc>
+      <long_desc>If set, the mission feasibility checker will check for a takeoff waypoint on the mission.</long_desc>
+      <boolean />
     </parameter>
     <parameter default="12.0" name="MIS_YAW_ERR" type="FLOAT">
       <short_desc>Max yaw error in degrees needed for waypoint heading acceptance</short_desc>
@@ -4025,6 +4078,7 @@ Does not affect MAVLINK_ROI input</short_desc>
         <value code="3">AUX3</value>
         <value code="4">AUX4</value>
         <value code="5">AUX5</value>
+        <value code="6">AUX6</value>
       </values>
     </parameter>
     <parameter default="0" name="MNT_MAN_ROLL" type="INT32">
@@ -4038,6 +4092,7 @@ Does not affect MAVLINK_ROI input</short_desc>
         <value code="3">AUX3</value>
         <value code="4">AUX4</value>
         <value code="5">AUX5</value>
+        <value code="6">AUX6</value>
       </values>
     </parameter>
     <parameter default="0" name="MNT_MAN_YAW" type="INT32">
@@ -4051,6 +4106,7 @@ Does not affect MAVLINK_ROI input</short_desc>
         <value code="3">AUX3</value>
         <value code="4">AUX4</value>
         <value code="5">AUX5</value>
+        <value code="6">AUX6</value>
       </values>
     </parameter>
     <parameter default="154" name="MNT_MAV_COMPID" type="INT32">
@@ -4611,11 +4667,6 @@ is 90 degrees. It should be lower than MPC_XY_CRUISE</short_desc>
       <unit>deg/s</unit>
       <decimal>1</decimal>
     </parameter>
-    <parameter default="0" name="MPC_OBS_AVOID" type="INT32">
-      <short_desc>Flag to enable obstacle avoidance
-Temporary Parameter to enable interface testing</short_desc>
-      <boolean />
-    </parameter>
     <parameter default="1" name="MPC_POS_MODE" type="INT32">
       <short_desc>Manual-Position control sub-mode</short_desc>
       <long_desc>The supported sub-modes are: 0 Default position control where sticks map to position/velocity directly. Maximum speeds is MPC_VEL_MANUAL. 1 Smooth position control where setpoints are adjusted based on acceleration limits and jerk limits. 2 Sport mode that is the same Default position control but with velocity limits set to the maximum allowed speeds (MPC_XY_VEL_MAX) 3 Smooth position control with maximum acceleration and jerk limits (different algorithm than 1).</long_desc>
@@ -4671,16 +4722,16 @@ Temporary Parameter to enable interface testing</short_desc>
     <parameter default="45.0" name="MPC_TILTMAX_AIR" type="FLOAT">
       <short_desc>Maximum tilt angle in air</short_desc>
       <long_desc>Limits maximum tilt in AUTO and POSCTRL modes during flight.</long_desc>
-      <min>0.0</min>
-      <max>90.0</max>
+      <min>20.0</min>
+      <max>180.0</max>
       <unit>deg</unit>
       <decimal>1</decimal>
     </parameter>
     <parameter default="12.0" name="MPC_TILTMAX_LND" type="FLOAT">
       <short_desc>Maximum tilt during landing</short_desc>
       <long_desc>Limits maximum tilt angle on landing.</long_desc>
-      <min>0.0</min>
-      <max>180.0</max>
+      <min>10.0</min>
+      <max>90.0</max>
       <unit>deg</unit>
       <decimal>1</decimal>
     </parameter>
@@ -4845,6 +4896,18 @@ the setpoint will be capped to MPC_XY_VEL_MAX</short_desc>
       <min>0</min>
       <max>120</max>
       <unit>deg/s</unit>
+    </parameter>
+  </group>
+  <group name="OSD">
+    <parameter default="0" name="OSD_ATXXXX_CFG" type="INT32">
+      <short_desc>Enable/Disable the ATXXX OSD Chip</short_desc>
+      <long_desc>Configure the ATXXXX OSD Chip (mounted on the OmnibusF4SD board) and select the transmission standard.</long_desc>
+      <reboot_required>true</reboot_required>
+      <values>
+        <value code="0">Disabled</value>
+        <value code="1">NTSC</value>
+        <value code="2">PAL</value>
+      </values>
     </parameter>
   </group>
   <group name="PWM Outputs">
@@ -6778,6 +6841,32 @@ the setpoint will be capped to MPC_XY_VEL_MAX</short_desc>
         <value code="18">Channel 18</value>
       </values>
     </parameter>
+    <parameter default="0" name="RC_MAP_AUX6" type="INT32">
+      <short_desc>AUX6 Passthrough RC channel</short_desc>
+      <min>0</min>
+      <max>18</max>
+      <values>
+        <value code="0">Unassigned</value>
+        <value code="1">Channel 1</value>
+        <value code="2">Channel 2</value>
+        <value code="3">Channel 3</value>
+        <value code="4">Channel 4</value>
+        <value code="5">Channel 5</value>
+        <value code="6">Channel 6</value>
+        <value code="7">Channel 7</value>
+        <value code="8">Channel 8</value>
+        <value code="9">Channel 9</value>
+        <value code="10">Channel 10</value>
+        <value code="11">Channel 11</value>
+        <value code="12">Channel 12</value>
+        <value code="13">Channel 13</value>
+        <value code="14">Channel 14</value>
+        <value code="15">Channel 15</value>
+        <value code="16">Channel 16</value>
+        <value code="17">Channel 17</value>
+        <value code="18">Channel 18</value>
+      </values>
+    </parameter>
     <parameter default="0" name="RC_MAP_FAILSAFE" type="INT32">
       <short_desc>Failsafe channel mapping</short_desc>
       <long_desc>The RC mapping index indicates which channel is used for failsafe If 0, whichever channel is mapped to throttle is used otherwise the value indicates the specific RC channel to use</long_desc>
@@ -7240,7 +7329,7 @@ the setpoint will be capped to MPC_XY_VEL_MAX</short_desc>
       </values>
     </parameter>
     <parameter default="0" name="RC_MAP_KILL_SW" type="INT32">
-      <short_desc>Kill switch channel</short_desc>
+      <short_desc>Emergency Kill switch channel</short_desc>
       <min>0</min>
       <max>18</max>
       <values>
@@ -7574,8 +7663,6 @@ the setpoint will be capped to MPC_XY_VEL_MAX</short_desc>
       <decimal>1</decimal>
       <increment>0.5</increment>
     </parameter>
-  </group>
-  <group name="Return To Land">
     <parameter default="0" name="RTL_TYPE" type="INT32">
       <short_desc>Return type</short_desc>
       <long_desc>Fly straight to the home location or planned mission landing and land there or use the planned mission to get to those points.</long_desc>
@@ -7686,6 +7773,7 @@ to takeoff is reached</short_desc>
       <long_desc>Determines when to start and stop logging. By default, logging is started when arming the system, and stopped when disarming.</long_desc>
       <reboot_required>true</reboot_required>
       <values>
+        <value code="-1">disabled</value>
         <value code="0">when armed until disarm (default)</value>
         <value code="1">from boot until disarm</value>
         <value code="2">from boot until shutdown</value>
@@ -8705,6 +8793,159 @@ is less than 50% of this value</short_desc>
       </values>
     </parameter>
   </group>
+  <group name="Simulation In Hardware">
+    <parameter default="0.025" name="SIH_IXX" type="FLOAT">
+      <short_desc>Vehicle inertia about X axis</short_desc>
+      <long_desc>The intertia is a 3 by 3 symmetric matrix. It represents the difficulty of the vehicle to modify its angular rate.</long_desc>
+      <min>0.0</min>
+      <unit>kg*m*m</unit>
+      <decimal>3</decimal>
+      <increment>0.005</increment>
+    </parameter>
+    <parameter default="0.0" name="SIH_IXY" type="FLOAT">
+      <short_desc>Vehicle cross term inertia xy</short_desc>
+      <long_desc>The intertia is a 3 by 3 symmetric matrix. This value can be set to 0 for a quad symmetric about its center of mass.</long_desc>
+      <unit>kg*m*m</unit>
+      <decimal>3</decimal>
+      <increment>0.005</increment>
+    </parameter>
+    <parameter default="0.0" name="SIH_IXZ" type="FLOAT">
+      <short_desc>Vehicle cross term inertia xz</short_desc>
+      <long_desc>The intertia is a 3 by 3 symmetric matrix. This value can be set to 0 for a quad symmetric about its center of mass.</long_desc>
+      <unit>kg*m*m</unit>
+      <decimal>3</decimal>
+      <increment>0.005</increment>
+    </parameter>
+    <parameter default="0.025" name="SIH_IYY" type="FLOAT">
+      <short_desc>Vehicle inertia about Y axis</short_desc>
+      <long_desc>The intertia is a 3 by 3 symmetric matrix. It represents the difficulty of the vehicle to modify its angular rate.</long_desc>
+      <min>0.0</min>
+      <unit>kg*m*m</unit>
+      <decimal>3</decimal>
+      <increment>0.005</increment>
+    </parameter>
+    <parameter default="0.0" name="SIH_IYZ" type="FLOAT">
+      <short_desc>Vehicle cross term inertia yz</short_desc>
+      <long_desc>The intertia is a 3 by 3 symmetric matrix. This value can be set to 0 for a quad symmetric about its center of mass.</long_desc>
+      <unit>kg*m*m</unit>
+      <decimal>3</decimal>
+      <increment>0.005</increment>
+    </parameter>
+    <parameter default="0.030" name="SIH_IZZ" type="FLOAT">
+      <short_desc>Vehicle inertia about Z axis</short_desc>
+      <long_desc>The intertia is a 3 by 3 symmetric matrix. It represents the difficulty of the vehicle to modify its angular rate.</long_desc>
+      <min>0.0</min>
+      <unit>kg*m*m</unit>
+      <decimal>3</decimal>
+      <increment>0.005</increment>
+    </parameter>
+    <parameter default="1.0" name="SIH_KDV" type="FLOAT">
+      <short_desc>First order drag coefficient</short_desc>
+      <long_desc>Physical coefficient representing the friction with air particules. The greater this value, the slower the quad will move. Drag force function of velocity: D=-KDV*V. The maximum freefall velocity can be computed as V=10*MASS/KDV [m/s]</long_desc>
+      <min>0.0</min>
+      <unit>N/(m/s)</unit>
+      <decimal>2</decimal>
+      <increment>0.05</increment>
+    </parameter>
+    <parameter default="0.025" name="SIH_KDW" type="FLOAT">
+      <short_desc>First order angular damper coefficient</short_desc>
+      <long_desc>Physical coefficient representing the friction with air particules during rotations. The greater this value, the slower the quad will rotate. Aerodynamic moment function of body rate: Ma=-KDW*W_B. This value can be set to 0 if unknown.</long_desc>
+      <min>0.0</min>
+      <unit>Nm/(rad/s)</unit>
+      <decimal>3</decimal>
+      <increment>0.005</increment>
+    </parameter>
+    <parameter default="32.34" name="SIH_LOC_H0" type="FLOAT">
+      <short_desc>Initial AMSL ground altitude</short_desc>
+      <long_desc>This value represents the Above Mean Sea Level (AMSL) altitude where the simulation begins. If using FlightGear as a visual animation, this value can be tweaked such that the vehicle lies on the ground at takeoff. LAT0, LON0, H0, MU_X, MU_Y, and MU_Z should ideally be consistent among each others to represent a physical ground location on Earth.</long_desc>
+      <min>-420.0</min>
+      <max>8848.0</max>
+      <unit>m</unit>
+      <decimal>2</decimal>
+      <increment>0.01</increment>
+    </parameter>
+    <parameter default="454671160" name="SIH_LOC_LAT0" type="INT32">
+      <short_desc>Initial geodetic latitude</short_desc>
+      <long_desc>This value represents the North-South location on Earth where the simulation begins. A value of 45 deg should be written 450000000. LAT0, LON0, H0, MU_X, MU_Y, and MU_Z should ideally be consistent among each others to represent a physical ground location on Earth.</long_desc>
+      <min>-850000000</min>
+      <max>850000000</max>
+      <unit>1e-7 deg</unit>
+    </parameter>
+    <parameter default="-737578370" name="SIH_LOC_LON0" type="INT32">
+      <short_desc>Initial geodetic longitude</short_desc>
+      <long_desc>This value represents the East-West location on Earth where the simulation begins. A value of 45 deg should be written 450000000. LAT0, LON0, H0, MU_X, MU_Y, and MU_Z should ideally be consistent among each others to represent a physical ground location on Earth.</long_desc>
+      <min>-1800000000</min>
+      <max>1800000000</max>
+      <unit>1e-7 deg</unit>
+    </parameter>
+    <parameter default="0.179" name="SIH_LOC_MU_X" type="FLOAT">
+      <short_desc>North magnetic field at the initial location</short_desc>
+      <long_desc>This value represents the North magnetic field at the initial location. A magnetic field calculator can be found on the NOAA website Note, the values need to be converted from nano Tesla to Gauss LAT0, LON0, H0, MU_X, MU_Y, and MU_Z should ideally be consistent among each others to represent a physical ground location on Earth.</long_desc>
+      <min>-1.0</min>
+      <max>1.0</max>
+      <unit>Gauss</unit>
+      <decimal>2</decimal>
+      <increment>0.001</increment>
+    </parameter>
+    <parameter default="-0.045" name="SIH_LOC_MU_Y" type="FLOAT">
+      <short_desc>East magnetic field at the initial location</short_desc>
+      <long_desc>This value represents the East magnetic field at the initial location. A magnetic field calculator can be found on the NOAA website Note, the values need to be converted from nano Tesla to Gauss LAT0, LON0, H0, MU_X, MU_Y, and MU_Z should ideally be consistent among each others to represent a physical ground location on Earth.</long_desc>
+      <min>-1.0</min>
+      <max>1.0</max>
+      <unit>Gauss</unit>
+      <decimal>2</decimal>
+      <increment>0.001</increment>
+    </parameter>
+    <parameter default="0.504" name="SIH_LOC_MU_Z" type="FLOAT">
+      <short_desc>Down magnetic field at the initial location</short_desc>
+      <long_desc>This value represents the Down magnetic field at the initial location. A magnetic field calculator can be found on the NOAA website Note, the values need to be converted from nano Tesla to Gauss LAT0, LON0, H0, MU_X, MU_Y, and MU_Z should ideally be consistent among each others to represent a physical ground location on Earth.</long_desc>
+      <min>-1.0</min>
+      <max>1.0</max>
+      <unit>Gauss</unit>
+      <decimal>2</decimal>
+      <increment>0.001</increment>
+    </parameter>
+    <parameter default="0.2" name="SIH_L_PITCH" type="FLOAT">
+      <short_desc>Pitch arm length</short_desc>
+      <long_desc>This is the arm length generating the pitching moment This value can be measured with a ruler. This corresponds to half the distance between the front and rear motors.</long_desc>
+      <min>0.0</min>
+      <unit>m</unit>
+      <decimal>2</decimal>
+      <increment>0.05</increment>
+    </parameter>
+    <parameter default="0.2" name="SIH_L_ROLL" type="FLOAT">
+      <short_desc>Roll arm length</short_desc>
+      <long_desc>This is the arm length generating the rolling moment This value can be measured with a ruler. This corresponds to half the distance between the left and right motors.</long_desc>
+      <min>0.0</min>
+      <unit>m</unit>
+      <decimal>2</decimal>
+      <increment>0.05</increment>
+    </parameter>
+    <parameter default="1.0" name="SIH_MASS" type="FLOAT">
+      <short_desc>Vehicle mass</short_desc>
+      <long_desc>This value can be measured by weighting the quad on a scale.</long_desc>
+      <min>0.0</min>
+      <unit>kg</unit>
+      <decimal>2</decimal>
+      <increment>0.1</increment>
+    </parameter>
+    <parameter default="0.1" name="SIH_Q_MAX" type="FLOAT">
+      <short_desc>Max propeller torque</short_desc>
+      <long_desc>This is the maximum torque delivered by one propeller when the motor is running at full speed. This value is usually about few percent of the maximum thrust force.</long_desc>
+      <min>0.0</min>
+      <unit>Nm</unit>
+      <decimal>3</decimal>
+      <increment>0.05</increment>
+    </parameter>
+    <parameter default="5.0" name="SIH_T_MAX" type="FLOAT">
+      <short_desc>Max propeller thrust force</short_desc>
+      <long_desc>This is the maximum force delivered by one propeller when the motor is running at full speed. This value is usually about 5 times the mass of the quadrotor.</long_desc>
+      <min>0.0</min>
+      <unit>N</unit>
+      <decimal>2</decimal>
+      <increment>0.5</increment>
+    </parameter>
+  </group>
   <group name="Snapdragon UART ESC">
     <parameter default="250000" name="UART_ESC_BAUD" type="INT32">
       <short_desc>ESC UART baud rate</short_desc>
@@ -8748,11 +8989,10 @@ is less than 50% of this value</short_desc>
     <parameter default="0" name="SYS_AUTOCONFIG" type="INT32">
       <short_desc>Automatically configure default values</short_desc>
       <long_desc>Set to 1 to reset parameters on next system startup (setting defaults). Platform-specific values are used if available. RC* parameters are preserved.</long_desc>
-      <min>0</min>
-      <max>1</max>
       <values>
         <value code="0">Keep parameters</value>
         <value code="1">Reset parameters</value>
+        <value code="2">Reload airframe parameters</value>
       </values>
     </parameter>
     <parameter default="0" name="SYS_AUTOSTART" type="INT32">
@@ -8849,10 +9089,14 @@ is less than 50% of this value</short_desc>
       <reboot_required>true</reboot_required>
     </parameter>
     <parameter default="0" name="SYS_HITL" type="INT32">
-      <short_desc>Enable HITL mode on next boot</short_desc>
-      <long_desc>While enabled the system will boot in HITL mode and not enable all sensors and checks. When disabled the same vehicle can be normally flown outdoors.</long_desc>
-      <boolean />
+      <short_desc>Enable HITL/SIH mode on next boot</short_desc>
+      <long_desc>While enabled the system will boot in Hardware-In-The-Loop (HITL) or Simulation-In-Hardware (SIH) mode and not enable all sensors and checks. When disabled the same vehicle can be flown normally.</long_desc>
       <reboot_required>true</reboot_required>
+      <values>
+        <value code="0">HITL and SIH disabled</value>
+        <value code="1">HITL enabled</value>
+        <value code="2">SIH enabled</value>
+      </values>
     </parameter>
     <parameter default="2" name="SYS_MC_EST_GROUP" type="INT32">
       <short_desc>Set multicopter estimator group</short_desc>
@@ -8867,7 +9111,7 @@ is less than 50% of this value</short_desc>
     </parameter>
     <parameter default="1" name="SYS_PARAM_VER" type="INT32">
       <short_desc>Parameter version</short_desc>
-      <long_desc>This monotonically increasing number encodes the parameter compatibility set. whenever it increases parameters might not be backwards compatible and ground control stations should suggest a fresh configuration.</long_desc>
+      <long_desc>This is used internally only: an airframe configuration might set an expected parameter version value via PARAM_DEFAULTS_VER. This is checked on bootup against SYS_PARAM_VER, and if they do not match, parameters from the airframe configuration are reloaded.</long_desc>
       <min>0</min>
     </parameter>
     <parameter category="System" default="2" name="SYS_RESTART_TYPE" type="INT32" volatile="true">
@@ -9500,6 +9744,14 @@ is less than 50% of this value</short_desc>
     </parameter>
   </group>
   <group name="VTOL Attitude Control">
+    <parameter category="System" default="1" name="V19_VT_ROLLDIR" type="INT32">
+      <short_desc>Temporary parameter for the upgrade to v1.9, this is reminder to check the direction of
+fixed-wing roll control surfaces on custom VTOLs platforms</short_desc>
+      <long_desc>This parameter is present in v1.9 to enable smooth transition, it will be removed in v1.10. In firmware versions before v1.9, the VTOL attitude controller generated reversed fixed wing roll commands. As a consequence, all VTOL mixers had to reverse roll mixing. The VTOL roll commands in fixed wing mode were fixed in v1.9! - Standard VTOL platforms should be unaffected and this parameter can be ignored. - Custom VTOL platforms may crash if no action is taken, please check the direction of deflection of roll control surfaces before flight. Fix the roll mixer if necessary. Set to 1 to disable VTOL actuator outputs and display an info message (default). Set to 0 AFTER CAREFULLY CHECKING the direction of deflection of roll control surfaces.</long_desc>
+      <min>0</min>
+      <max>1</max>
+      <decimal>0</decimal>
+    </parameter>
     <parameter default="8.0" name="VT_ARSP_BLEND" type="FLOAT">
       <short_desc>Transition blending airspeed</short_desc>
       <long_desc>Airspeed at which we can start blending both fw and mc controls. Set to 0 to disable.</long_desc>

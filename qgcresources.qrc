@@ -1,8 +1,13 @@
 <RCC>
     <qresource prefix="/localization">
-        <file alias="qgc_zh_CN.qm">localization/qgc_zh-CN.qm</file>
+        <file alias="qgc_bg.qm">localization/qgc_bg.qm</file>
         <file alias="qgc_de_DE.qm">localization/qgc_de-DE.qm</file>
+        <file alias="qgc_fr_FR.qm">localization/qgc_fr_FR.qm</file>
+        <file alias="qgc_it.qm">localization/qgc_it.qm</file>
+        <file alias="qgc_ko.qm">localization/qgc_ko.qm</file>
+        <file alias="qgc_ru.qm">localization/qgc_ru.qm</file>
         <file alias="qgc_tr.qm">localization/qgc_tr.qm</file>
+        <file alias="qgc_zh_CN.qm">localization/qgc_zh-CN.qm</file>
     </qresource>
     <qresource prefix="/fonts">
         <file alias="opensans">resources/fonts/OpenSans-Regular.ttf</file>
@@ -75,6 +80,7 @@
         <file alias="Frames/Vectored6DOF.png">src/AutoPilotPlugins/APM/Images/vectored6dof-frame.png</file>
         <file alias="Frames/SimpleROV-3.png">src/AutoPilotPlugins/APM/Images/simple3-frame.png</file>
         <file alias="Frames/SimpleROV-4.png">src/AutoPilotPlugins/APM/Images/simple4-frame.png</file>
+        <file alias="Frames/SimpleROV-5.png">src/AutoPilotPlugins/APM/Images/simple5-frame.png</file>
         <file alias="LogDownloadIcon">src/AnalyzeView/LogDownloadIcon.svg</file>
         <file alias="LowBattery.svg">src/AutoPilotPlugins/PX4/Images/LowBattery.svg</file>
         <file alias="LowBatteryLight.svg">src/AutoPilotPlugins/PX4/Images/LowBatteryLight.svg</file>
@@ -181,6 +187,8 @@
         <file alias="AlertAircraft.svg">src/FlightMap/Images/AlertAircraft.svg</file>
         <file alias="AwarenessAircraft.svg">src/FlightMap/Images/AwarenessAircraft.svg</file>
         <file alias="check.svg">resources/check.svg</file>
+        <file alias="no-logging.svg">src/AutoPilotPlugins/PX4/Images/no-logging.svg</file>
+        <file alias="no-logging-light.svg">src/AutoPilotPlugins/PX4/Images/no-logging-light.svg</file>
     </qresource>
     <qresource prefix="/res">
         <file alias="action.svg">resources/action.svg</file>
@@ -310,6 +318,7 @@
         <file alias="joystickThrottleUp.png">resources/calibration/joystick/mode1/joystickThrottleUp.png</file>
         <file alias="joystickYawLeft.png">resources/calibration/joystick/mode1/joystickYawLeft.png</file>
         <file alias="joystickYawRight.png">resources/calibration/joystick/mode1/joystickYawRight.png</file>
+        <file alias="joystickExtraPotsAndSwitches">resources/calibration/joystick/mode4/joystickExtraPotsAndSwitches.png</file>
     </qresource>
     <qresource prefix="/qml/calibration/joystick/mode2">
         <file alias="joystickCenter.png">resources/calibration/joystick/mode2/joystickCenter.png</file>
@@ -321,6 +330,7 @@
         <file alias="joystickThrottleUp.png">resources/calibration/joystick/mode2/joystickThrottleUp.png</file>
         <file alias="joystickYawLeft.png">resources/calibration/joystick/mode2/joystickYawLeft.png</file>
         <file alias="joystickYawRight.png">resources/calibration/joystick/mode2/joystickYawRight.png</file>
+        <file alias="joystickExtraPotsAndSwitches.png">resources/calibration/joystick/mode4/joystickExtraPotsAndSwitches.png</file>
     </qresource>
     <qresource prefix="/qml/calibration/joystick/mode3">
         <file alias="joystickCenter.png">resources/calibration/joystick/mode3/joystickCenter.png</file>
@@ -332,6 +342,7 @@
         <file alias="joystickThrottleUp.png">resources/calibration/joystick/mode3/joystickThrottleUp.png</file>
         <file alias="joystickYawLeft.png">resources/calibration/joystick/mode3/joystickYawLeft.png</file>
         <file alias="joystickYawRight.png">resources/calibration/joystick/mode3/joystickYawRight.png</file>
+        <file alias="joystickExtraPotsAndSwitches.png">resources/calibration/joystick/mode4/joystickExtraPotsAndSwitches.png</file>
     </qresource>
     <qresource prefix="/qml/calibration/joystick/mode4">
         <file alias="joystickCenter.png">resources/calibration/joystick/mode4/joystickCenter.png</file>
@@ -343,5 +354,6 @@
         <file alias="joystickThrottleUp.png">resources/calibration/joystick/mode4/joystickThrottleUp.png</file>
         <file alias="joystickYawLeft.png">resources/calibration/joystick/mode4/joystickYawLeft.png</file>
         <file alias="joystickYawRight.png">resources/calibration/joystick/mode4/joystickYawRight.png</file>
+        <file alias="joystickExtraPotsAndSwitches.png">resources/calibration/joystick/mode4/joystickExtraPotsAndSwitches.png</file>
     </qresource>
 </RCC>

@@ -364,10 +364,12 @@ QGCCameraControl::takePhoto()
             _setPhotoStatus(PHOTO_CAPTURE_IN_PROGRESS);
             _captureInfoRetries = 0;
             //-- Capture local image as well
-            QString photoPath = qgcApp()->toolbox()->settingsManager()->appSettings()->savePath()->rawValue().toString() + QStringLiteral("/Photo");
-            QDir().mkpath(photoPath);
-            photoPath += + "/" + QDateTime::currentDateTime().toString("yyyy-MM-dd_hh.mm.ss.zzz") + ".jpg";
-            qgcApp()->toolbox()->videoManager()->videoReceiver()->grabImage(photoPath);
+            if(qgcApp()->toolbox()->videoManager()->videoReceiver()) {
+                QString photoPath = qgcApp()->toolbox()->settingsManager()->appSettings()->savePath()->rawValue().toString() + QStringLiteral("/Photo");
+                QDir().mkpath(photoPath);
+                photoPath += + "/" + QDateTime::currentDateTime().toString("yyyy-MM-dd_hh.mm.ss.zzz") + ".jpg";
+                qgcApp()->toolbox()->videoManager()->videoReceiver()->grabImage(photoPath);
+            }
             return true;
         }
     }
@@ -666,6 +668,9 @@ QGCCameraControl::_mavCommandResult(int vehicleId, int component, int command, i
                 break;
             case MAV_CMD_REQUEST_STORAGE_INFORMATION:
                 _storageInfoRetries = 0;
+                break;
+            case MAV_CMD_IMAGE_START_CAPTURE:
+                _captureStatusTimer.start(1000);
                 break;
         }
     } else {
@@ -1471,10 +1476,12 @@ QGCCameraControl::handleCaptureStatus(const mavlink_camera_capture_status_t& cap
     //-- Time Lapse
     if(photoStatus() == PHOTO_CAPTURE_INTERVAL_IDLE || photoStatus() == PHOTO_CAPTURE_INTERVAL_IN_PROGRESS) {
         //-- Capture local image as well
-        QString photoPath = qgcApp()->toolbox()->settingsManager()->appSettings()->savePath()->rawValue().toString() + QStringLiteral("/Photo");
-        QDir().mkpath(photoPath);
-        photoPath += + "/" + QDateTime::currentDateTime().toString("yyyy-MM-dd_hh.mm.ss.zzz") + ".jpg";
-        qgcApp()->toolbox()->videoManager()->videoReceiver()->grabImage(photoPath);
+        if(qgcApp()->toolbox()->videoManager()->videoReceiver()) {
+            QString photoPath = qgcApp()->toolbox()->settingsManager()->appSettings()->savePath()->rawValue().toString() + QStringLiteral("/Photo");
+            QDir().mkpath(photoPath);
+            photoPath += + "/" + QDateTime::currentDateTime().toString("yyyy-MM-dd_hh.mm.ss.zzz") + ".jpg";
+            qgcApp()->toolbox()->videoManager()->videoReceiver()->grabImage(photoPath);
+        }
     }
 }
 
@@ -1489,7 +1496,10 @@ QGCCameraControl::handleVideoInfo(const mavlink_video_stream_information_t* vi)
         QGCVideoStreamInfo* pStream = new QGCVideoStreamInfo(this, vi);
         QQmlEngine::setObjectOwnership(pStream, QQmlEngine::CppOwnership);
         _streams.append(pStream);
+        _streamLabels.append(pStream->name());
         emit streamsChanged();
+        emit streamLabelsChanged();
+        qDebug() << _streamLabels;
     }
     //-- Check for missing count
     if(_streams.count() < _expectedCount) {
@@ -1525,6 +1535,7 @@ QGCCameraControl::setCurrentStream(int stream)
         if(_currentStream != stream) {
             QGCVideoStreamInfo* pInfo = currentStreamInstance();
             if(pInfo) {
+                qCDebug(CameraControlLog) << "Stopping stream:" << pInfo->uri();
                 //-- Stop current stream
                 _vehicle->sendMavCommand(
                     _compID,                                // Target component
@@ -1536,6 +1547,7 @@ QGCCameraControl::setCurrentStream(int stream)
             pInfo = currentStreamInstance();
             if(pInfo) {
                 //-- Start new stream
+                qCDebug(CameraControlLog) << "Starting stream:" << pInfo->uri();
                 _vehicle->sendMavCommand(
                     _compID,                                // Target component
                     MAV_CMD_VIDEO_START_STREAMING,          // Command id
@@ -2027,10 +2039,11 @@ QGCVideoStreamInfo::QGCVideoStreamInfo(QObject* parent, const mavlink_video_stre
 qreal
 QGCVideoStreamInfo::aspectRatio()
 {
+    qreal ar = 1.0;
     if(_streamInfo.resolution_h && _streamInfo.resolution_v) {
-        return static_cast<double>(_streamInfo.resolution_h) / static_cast<double>(_streamInfo.resolution_v);
+        ar = static_cast<double>(_streamInfo.resolution_h) / static_cast<double>(_streamInfo.resolution_v);
     }
-    return 1.0;
+    return ar;
 }
 
 //-----------------------------------------------------------------------------
