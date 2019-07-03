@@ -23,7 +23,7 @@ import QGroundControl.Palette               1.0
 Item {
     anchors.top:    parent.top
     anchors.bottom: parent.bottom
-    width:          batteryIndicatorRow.width
+    width:          battery2IndicatorRow.width
 
     property var _activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
 
@@ -58,7 +58,7 @@ Item {
     }
 
     Component {
-        id: batteryInfo
+        id: battery2Info
 
         Rectangle {
             width:  battCol.width   + ScreenTools.defaultFontPixelWidth  * 3
@@ -104,7 +104,7 @@ Item {
     }
 
     Row {
-        id:             batteryIndicatorRow
+        id:             battery2IndicatorRow
         anchors.top:    parent.top
         anchors.bottom: parent.bottom
         opacity:        (_activeVehicle && _activeVehicle.battery2.voltage.value >= 0) ? 1 : 0.5
@@ -126,6 +126,6 @@ Item {
     }
     MouseArea {
         anchors.fill:   parent
-        onClicked:      mainWindow.showPopUp(batteryInfo, mapToItem(toolBar, x, y).x + (width / 2))
+        onClicked:      mainWindow.showPopUp(battery2Info, mapToItem(toolBar, x, y).x + (width / 2))
     }
 }

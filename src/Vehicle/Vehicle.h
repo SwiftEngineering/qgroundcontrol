@@ -669,6 +669,7 @@ public:
     Q_PROPERTY(FactGroup* gps               READ gpsFactGroup               CONSTANT)
     Q_PROPERTY(FactGroup* battery           READ battery1FactGroup          CONSTANT)
     Q_PROPERTY(FactGroup* battery2          READ battery2FactGroup          CONSTANT)
+    Q_PROPERTY(FactGroup* batteryOther      READ batteryOtherFactGroup      CONSTANT)
     Q_PROPERTY(FactGroup* wind              READ windFactGroup              CONSTANT)
     Q_PROPERTY(FactGroup* vibration         READ vibrationFactGroup         CONSTANT)
     Q_PROPERTY(FactGroup* temperature       READ temperatureFactGroup       CONSTANT)
@@ -961,6 +962,7 @@ public:
     FactGroup* gpsFactGroup             (void) { return &_gpsFactGroup; }
     FactGroup* battery1FactGroup        (void) { return &_battery1FactGroup; }
     FactGroup* battery2FactGroup        (void) { return &_battery2FactGroup; }
+    FactGroup* batteryOtherFactGroup    (void) { return &_batteryOtherFactGroup; }
     FactGroup* windFactGroup            (void) { return &_windFactGroup; }
     FactGroup* vibrationFactGroup       (void) { return &_vibrationFactGroup; }
     FactGroup* temperatureFactGroup     (void) { return &_temperatureFactGroup; }
@@ -1492,6 +1494,7 @@ private:
     VehicleGPSFactGroup             _gpsFactGroup;
     VehicleBatteryFactGroup         _battery1FactGroup;
     VehicleBatteryFactGroup         _battery2FactGroup;
+    VehicleBatteryFactGroup         _batteryOtherFactGroup;
     VehicleWindFactGroup            _windFactGroup;
     VehicleVibrationFactGroup       _vibrationFactGroup;
     VehicleTemperatureFactGroup     _temperatureFactGroup;
@@ -1521,6 +1524,7 @@ private:
     static const char* _gpsFactGroupName;
     static const char* _battery1FactGroupName;
     static const char* _battery2FactGroupName;
+    static const char* _batteryOtherFactGroupName;
     static const char* _windFactGroupName;
     static const char* _vibrationFactGroupName;
     static const char* _temperatureFactGroupName;
