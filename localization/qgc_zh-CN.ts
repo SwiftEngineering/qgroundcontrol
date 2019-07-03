@@ -2939,19 +2939,37 @@ propellers on the green thrusters and counter-clockwise propellers on the blue t
     </message>
   </context>
   <context>
-    <name>BatteryIndicator</name>
+    <name>BatteryIndicatorPrimary</name>
     <message>
-      <location filename="../src/ui/toolbar/BatteryIndicator.qml" line="79"/>
+      <location filename="../src/ui/toolbar/BatteryIndicatorPrimary.qml" line="79"/>
       <source>Battery Status</source>
       <translation>电池状态</translation>
     </message>
     <message>
-      <location filename="../src/ui/toolbar/BatteryIndicator.qml" line="91"/>
+      <location filename="../src/ui/toolbar/BatteryIndicatorPrimary.qml" line="91"/>
       <source>Voltage:</source>
       <translation>电压：</translation>
     </message>
     <message>
-      <location filename="../src/ui/toolbar/BatteryIndicator.qml" line="93"/>
+      <location filename="../src/ui/toolbar/BatteryIndicatorPrimary.qml" line="93"/>
+      <source>Accumulated Consumption:</source>
+      <translation>累计耗电量：</translation>
+    </message>
+  </context>
+  <context>
+    <name>BatteryIndicatorSecondary</name>
+    <message>
+      <location filename="../src/ui/toolbar/BatteryIndicatorSecondary.qml" line="79"/>
+      <source>Battery Status</source>
+      <translation>电池状态</translation>
+    </message>
+    <message>
+      <location filename="../src/ui/toolbar/BatteryIndicatorSecondary.qml" line="91"/>
+      <source>Voltage:</source>
+      <translation>电压：</translation>
+    </message>
+    <message>
+      <location filename="../src/ui/toolbar/BatteryIndicatorSecondary.qml" line="93"/>
       <source>Accumulated Consumption:</source>
       <translation>累计耗电量：</translation>
     </message>

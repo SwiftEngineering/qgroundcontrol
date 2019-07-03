@@ -76,7 +76,7 @@ Item {
 
                 QGCLabel {
                     id:             battLabel
-                    text:           qsTr("Battery Status")
+                    text:           qsTr("Primary Battery Status")
                     font.family:    ScreenTools.demiboldFontFamily
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
