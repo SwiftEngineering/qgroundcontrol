@@ -1517,28 +1517,28 @@ void Vehicle::_handleSysStatus(mavlink_message_t& message)
     mavlink_sys_status_t sysStatus;
     mavlink_msg_sys_status_decode(&message, &sysStatus);
 
-    if (sysStatus.current_battery == -1) {
-        _battery1FactGroup.current()->setRawValue(VehicleBatteryFactGroup::_currentUnavailable);
-    } else {
-        // Current is in Amps, current_battery is 10 * milliamperes (1 = 10 milliampere)
-        _battery1FactGroup.current()->setRawValue((float)sysStatus.current_battery / 100.0f);
-    }
-    if (sysStatus.voltage_battery == UINT16_MAX) {
-        _battery1FactGroup.voltage()->setRawValue(VehicleBatteryFactGroup::_voltageUnavailable);
-    } else {
-        _battery1FactGroup.voltage()->setRawValue((double)sysStatus.voltage_battery / 1000.0);
-        // current_battery is 10 mA and voltage_battery is 1mV. (10/1e3 times 1/1e3 = 1/1e5)
-        _battery1FactGroup.instantPower()->setRawValue((float)(sysStatus.current_battery*sysStatus.voltage_battery)/(100000.0));
-    }
-    _battery1FactGroup.percentRemaining()->setRawValue(sysStatus.battery_remaining);
-
-    if (sysStatus.battery_remaining > 0) {
-        if (sysStatus.battery_remaining < _settingsManager->appSettings()->batteryPercentRemainingAnnounce()->rawValue().toInt() &&
-                sysStatus.battery_remaining < _lastAnnouncedLowPrimaryBatteryPercent) {
-            _say(QString(tr("%1 low primary battery: %2 percent remaining")).arg(_vehicleIdSpeech()).arg(sysStatus.battery_remaining));
-        }
-        _lastAnnouncedLowPrimaryBatteryPercent = sysStatus.battery_remaining;
-    }
+    // if (sysStatus.current_battery == -1) {
+    //     _battery1FactGroup.current()->setRawValue(VehicleBatteryFactGroup::_currentUnavailable);
+    // } else {
+    //     // Current is in Amps, current_battery is 10 * milliamperes (1 = 10 milliampere)
+    //     _battery1FactGroup.current()->setRawValue((float)sysStatus.current_battery / 100.0f);
+    // }
+    // if (sysStatus.voltage_battery == UINT16_MAX) {
+    //     _battery1FactGroup.voltage()->setRawValue(VehicleBatteryFactGroup::_voltageUnavailable);
+    // } else {
+    //     _battery1FactGroup.voltage()->setRawValue((double)sysStatus.voltage_battery / 1000.0);
+    //     // current_battery is 10 mA and voltage_battery is 1mV. (10/1e3 times 1/1e3 = 1/1e5)
+    //     _battery1FactGroup.instantPower()->setRawValue((float)(sysStatus.current_battery*sysStatus.voltage_battery)/(100000.0));
+    // }
+    // _battery1FactGroup.percentRemaining()->setRawValue(sysStatus.battery_remaining);
+    //
+    // if (sysStatus.battery_remaining > 0) {
+    //     if (sysStatus.battery_remaining < _settingsManager->appSettings()->batteryPercentRemainingAnnounce()->rawValue().toInt() &&
+    //             sysStatus.battery_remaining < _lastAnnouncedLowPrimaryBatteryPercent) {
+    //         _say(QString(tr("%1 low primary battery: %2 percent remaining")).arg(_vehicleIdSpeech()).arg(sysStatus.battery_remaining));
+    //     }
+    //     _lastAnnouncedLowPrimaryBatteryPercent = sysStatus.battery_remaining;
+    // }
 
     if (_onboardControlSensorsPresent != sysStatus.onboard_control_sensors_present) {
         _onboardControlSensorsPresent = sysStatus.onboard_control_sensors_present;

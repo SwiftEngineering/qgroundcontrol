@@ -151,6 +151,10 @@
         <file alias="MapTypeBlack.svg">src/FlightMap/Images/MapTypeBlack.svg</file>
         <file alias="Armed.svg">src/ui/toolbar/Images/Armed.svg</file>
         <file alias="Battery.svg">src/ui/toolbar/Images/Battery.svg</file>
+        <file alias="Battery1.svg">src/ui/toolbar/Images/Battery1.svg</file>
+        <file alias="Battery2.svg">src/ui/toolbar/Images/Battery2.svg</file>
+        <file alias="BatteryHover.svg">src/ui/toolbar/Images/BatteryHover.svg</file>
+        <file alias="BatteryCruise.svg">src/ui/toolbar/Images/BatteryCruise.svg</file>
         <file alias="Connect.svg">src/ui/toolbar/Images/Connect.svg</file>
         <file alias="Disarmed.svg">src/ui/toolbar/Images/Disarmed.svg</file>
         <file alias="Disconnect.svg">src/ui/toolbar/Images/Disconnect.svg</file>

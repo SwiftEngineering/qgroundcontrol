@@ -113,7 +113,7 @@ Item {
             anchors.bottom:     parent.bottom
             width:              height
             sourceSize.width:   width
-            source:             "/qmlimages/Battery.svg"
+            source:             "/qmlimages/Battery2.svg"
             fillMode:           Image.PreserveAspectFit
             color:              qgcPal.text
         }
