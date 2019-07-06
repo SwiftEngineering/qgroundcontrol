@@ -183,7 +183,8 @@ Vehicle::Vehicle(LinkInterface*             link,
     , _firmwareVersionType(FIRMWARE_VERSION_TYPE_OFFICIAL)
     , _gitHash(versionNotSetValue)
     , _uid(0)
-    , _lastAnnouncedLowBatteryPercent(100)
+    , _lastAnnouncedLowPrimaryBatteryPercent(100)
+    , _lastAnnouncedLowSecondaryBatteryPercent(100)
     , _priorityLinkCommanded(false)
     , _orbitActive(false)
     , _rollFact             (0, _rollFactName,              FactMetaData::valueTypeDouble)
@@ -386,7 +387,8 @@ Vehicle::Vehicle(MAV_AUTOPILOT              firmwareType,
     , _firmwareVersionType(FIRMWARE_VERSION_TYPE_OFFICIAL)
     , _gitHash(versionNotSetValue)
     , _uid(0)
-    , _lastAnnouncedLowBatteryPercent(100)
+    , _lastAnnouncedLowPrimaryBatteryPercent(100)
+    , _lastAnnouncedLowSecondaryBatteryPercent(100)
     , _orbitActive(false)
     , _rollFact             (0, _rollFactName,              FactMetaData::valueTypeDouble)
     , _pitchFact            (0, _pitchFactName,             FactMetaData::valueTypeDouble)
@@ -1532,10 +1534,10 @@ void Vehicle::_handleSysStatus(mavlink_message_t& message)
 
     if (sysStatus.battery_remaining > 0) {
         if (sysStatus.battery_remaining < _settingsManager->appSettings()->batteryPercentRemainingAnnounce()->rawValue().toInt() &&
-                sysStatus.battery_remaining < _lastAnnouncedLowBatteryPercent) {
+                sysStatus.battery_remaining < _lastAnnouncedLowPrimaryBatteryPercent) {
             _say(QString(tr("%1 low primary battery: %2 percent remaining")).arg(_vehicleIdSpeech()).arg(sysStatus.battery_remaining));
         }
-        _lastAnnouncedLowBatteryPercent = sysStatus.battery_remaining;
+        _lastAnnouncedLowPrimaryBatteryPercent = sysStatus.battery_remaining;
     }
 
     if (_onboardControlSensorsPresent != sysStatus.onboard_control_sensors_present) {
@@ -1624,18 +1626,18 @@ void Vehicle::_handleBatteryStatus(mavlink_message_t& message)
 
     if (bat_status.id == 0 && bat_status.battery_remaining > 0) {
         if (bat_status.battery_remaining < _settingsManager->appSettings()->batteryPercentRemainingAnnounce()->rawValue().toInt() &&
-                bat_status.battery_remaining < _lastAnnouncedLowBatteryPercent) {
+                bat_status.battery_remaining < _lastAnnouncedLowPrimaryBatteryPercent) {
             _say(QString(tr("%1 low primary battery: %2 percent remaining")).arg(_vehicleIdSpeech()).arg(bat_status.battery_remaining));
         }
-        _lastAnnouncedLowBatteryPercent = bat_status.battery_remaining;
+        _lastAnnouncedLowPrimaryBatteryPercent = bat_status.battery_remaining;
     }
 
     if (bat_status.id == 1 && bat_status.battery_remaining > 0) {
         if (bat_status.battery_remaining < _settingsManager->appSettings()->batteryPercentRemainingAnnounce()->rawValue().toInt() &&
-                bat_status.battery_remaining < _lastAnnouncedLowBatteryPercent) {
+                bat_status.battery_remaining < _lastAnnouncedLowSecondaryBatteryPercent) {
             _say(QString(tr("%1 low secondary battery: %2 percent remaining")).arg(_vehicleIdSpeech()).arg(bat_status.battery_remaining));
         }
-        _lastAnnouncedLowBatteryPercent = bat_status.battery_remaining;
+        _lastAnnouncedLowSecondaryBatteryPercent = bat_status.battery_remaining;
     }
 
     //-- TODO: Somewhere, actions would be taken based on this chargeState:

@@ -1453,7 +1453,8 @@ private:
     QString _gitHash;
     quint64 _uid;
 
-    int _lastAnnouncedLowBatteryPercent;
+    int _lastAnnouncedLowPrimaryBatteryPercent;
+    int _lastAnnouncedLowSecondaryBatteryPercent;
 
     SharedLinkInterfacePointer _priorityLink;  // We always keep a reference to the priority link to manage shutdown ordering
     bool _priorityLinkCommanded;
