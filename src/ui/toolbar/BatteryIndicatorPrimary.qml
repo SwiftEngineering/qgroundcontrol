@@ -76,7 +76,7 @@ Item {
 
                 QGCLabel {
                     id:             battLabel
-                    text:           qsTr("Battery Status")
+                    text:           qsTr("Primary Battery Status")
                     font.family:    ScreenTools.demiboldFontFamily
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
@@ -113,7 +113,7 @@ Item {
             anchors.bottom:     parent.bottom
             width:              height
             sourceSize.width:   width
-            source:             "/qmlimages/Battery.svg"
+            source:             "/qmlimages/Battery1.svg"
             fillMode:           Image.PreserveAspectFit
             color:              qgcPal.text
         }
